@@ -1,0 +1,42 @@
+services:
+  backend:
+    build: ./server
+    environment:
+      - MONGO_URI=mongodb://database:27017/chat
+      - REDIS_HOST=message_broker
+      - REDIS_PORT=6379
+      - JWT_SECRET=your-super-secret-key
+    depends_on:
+      - database
+      - message_broker
+
+  client:
+    build: ./client
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    expose:
+      - "3000"
+    depends_on:
+      - backend
+
+  database:
+    image: mongo:latest
+    volumes:
+      - mongo-data:/data/db
+
+  message_broker:
+    image: redis:latest
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
+      - client
+
+volumes:
+  mongo-data:
