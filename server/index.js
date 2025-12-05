@@ -21,6 +21,8 @@ const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 const roomRoutes = require('./routes/rooms');
 app.use('/api/rooms', roomRoutes);
+const fileRoutes = require('./routes/files');
+app.use('/api/files', fileRoutes);
 
 // --- Database Schema ---
 const MessageSchema = new mongoose.Schema({

@@ -6,9 +6,16 @@ services:
       - REDIS_HOST=message_broker
       - REDIS_PORT=6379
       - JWT_SECRET=your-super-secret-key
+      - MINIO_ENDPOINT=minio
+      - MINIO_PORT=9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=chat
+      - MINIO_PUBLIC_ENDPOINT=localhost
     depends_on:
       - database
       - message_broker
+      - minio
 
   client:
     build: ./client
@@ -32,6 +39,18 @@ services:
     ports:
       - "6379:6379"
 
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    command: server /data --console-address ":9001"
+
   nginx:
     image: nginx:latest
     ports:
@@ -44,3 +63,4 @@ services:
 
 volumes:
   mongo-data:
+  minio-data:

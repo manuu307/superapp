@@ -23,6 +23,34 @@ const UserSchema = new mongoose.Schema({
     type: [String],
     default: []
   },
+  name: {
+    type: String,
+    trim: true
+  },
+  lastname: {
+    type: String,
+    trim: true
+  },
+  nickname: {
+    type: String,
+    trim: true
+  },
+  tags: {
+    type: [String],
+    default: []
+  },
+  description: {
+    type: String,
+    trim: true
+  },
+  website: {
+    type: String,
+    trim: true
+  },
+  contacts: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   createdAt: {
     type: Date,
     default: Date.now
