@@ -15,6 +15,7 @@ RUN npm install
 COPY . .
 
 # Expose the port the app runs on (matching the PORT environment variable)
+ENV PORT=3000
 EXPOSE 3000
 
 # Define the command to run the application

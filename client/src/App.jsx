@@ -3,41 +3,34 @@ import io from 'socket.io-client';
 import './App.css';
 import Login from './components/Login';
 import Register from './components/Register';
+import CreateRoom from './components/CreateRoom';
 
 let socket;
 
 function App() {
-  console.log('App component rendered');
-  const [token, setToken] = useState(() => {
-    const storedToken = localStorage.getItem('token');
-    console.log('Initial token from localStorage:', storedToken);
-    return storedToken;
-  });
+  const [token, setToken] = useState(localStorage.getItem('token'));
   const [isLogin, setIsLogin] = useState(true);
   const [room, setRoom] = useState('General');
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [user, setUser] = useState(null);
+  const [showCreateRoom, setShowCreateRoom] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log('Token state changed:', token);
     if (token) {
       const fetchUser = async () => {
-        console.log('Fetching user with token:', token);
         try {
           const response = await fetch('/api/auth/me', {
             headers: {
               'x-auth-token': token,
             },
           });
-          if (!response.ok) {
-            throw new Error('Invalid token');
-          }
           const data = await response.json();
           setUser(data);
-          setRooms(data.rooms);
-          if (!data.rooms.includes(room)) {
+          setRooms(data.rooms || []);
+          if (data.rooms && !data.rooms.includes(room)) {
             setRoom(data.rooms[0] || 'General');
           }
         } catch (error) {
@@ -45,9 +38,13 @@ function App() {
           // Handle token expiration or invalid token
           localStorage.removeItem('token');
           setToken(null);
+        } finally {
+          setIsLoading(false);
         }
       };
       fetchUser();
+    } else {
+      setIsLoading(false);
     }
   }, [token]);
 
@@ -99,8 +96,13 @@ function App() {
     setUser(null);
   }
 
+  const handleRoomCreated = (newRoom) => {
+    setRooms([...rooms, newRoom.name]);
+    setRoom(newRoom.name);
+    setShowCreateRoom(false);
+  };
+
   if (!token) {
-    console.log('No token, rendering auth forms');
     return (
       <div className="App">
         <div className="auth-container">
@@ -117,12 +119,19 @@ function App() {
     );
   }
 
-  console.log('Token exists, rendering main app');
+  if (isLoading) {
+    return <div className="App">Loading...</div>;
+  }
+
   return (
     <div className="App">
       <div className="main-container">
         <div className="rooms-container">
           <h2>Rooms</h2>
+          <button onClick={() => setShowCreateRoom(!showCreateRoom)} className="create-room-btn">
+            {showCreateRoom ? 'Cancel' : 'Create Room'}
+          </button>
+          {showCreateRoom && <CreateRoom token={token} onRoomCreated={handleRoomCreated} />}
           <ul>
             {rooms.map((r) => (
               <li key={r} onClick={() => setRoom(r)} className={r === room ? 'active' : ''}>

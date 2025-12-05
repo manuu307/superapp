@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -18,6 +19,8 @@ const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
+const roomRoutes = require('./routes/rooms');
+app.use('/api/rooms', roomRoutes);
 
 // --- Database Schema ---
 const MessageSchema = new mongoose.Schema({

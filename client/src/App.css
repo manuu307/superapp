@@ -123,6 +123,87 @@ body {
   cursor: pointer;
 }
 
+/* --- Create Room --- */
+.rooms-container .create-room-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.create-room-form {
+  background-color: #2f2f2f;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.create-room-form h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.create-room-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.create-room-form input[type="text"],
+.create-room-form textarea {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background-color: #3c3f41;
+  color: white;
+  width: 95%;
+}
+
+.create-room-form textarea {
+  resize: vertical;
+}
+
+.create-room-form label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.create-room-form h4 {
+  margin-bottom: 5px;
+  border-bottom: 1px solid #444;
+  padding-bottom: 5px;
+}
+
+.create-room-form div > div { /* User/Admin list item */
+  padding: 5px;
+}
+
+.create-room-form button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #61dafb;
+  color: #282c34;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.error {
+  color: #dc3545;
+  background-color: #ffc1c13d;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+
 
 /* --- Chat Container --- */
 .chat-container {
