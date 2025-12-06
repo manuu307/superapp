@@ -26,14 +26,15 @@ const Register = ({ setToken }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Register</h2>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <h2 className="text-2xl font-bold text-center">Register</h2>
       <input
         type="text"
         placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required
+        className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
       />
       <input
         type="email"
@@ -41,6 +42,7 @@ const Register = ({ setToken }) => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
+        className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
       />
       <input
         type="password"
@@ -48,8 +50,9 @@ const Register = ({ setToken }) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
+        className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
       />
-      <button type="submit">Register</button>
+      <button type="submit" className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Register</button>
     </form>
   );
 };

@@ -80,10 +80,12 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Get user from token
+// @route   GET api/auth/me
+// @desc    Get user from token
+// @access  Private
 router.get('/me', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findById(req.user.id).select('-password').populate('contacts', '-password');
     res.json(user);
   } catch (err) {
     console.error(err.message);
