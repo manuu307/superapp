@@ -73,28 +73,31 @@ const CreateRoom = ({ token, onRoomCreated }) => {
   };
 
   return (
-    <div className="create-room-form">
-      <h3>Create a New Room</h3>
-      {error && <p className="error">{error}</p>}
-      <form onSubmit={handleSubmit}>
+    <div className="p-4 my-4 bg-white rounded-md shadow-md dark:bg-gray-800">
+      <h3 className="mb-4 text-xl font-bold text-center">Create a New Room</h3>
+      {error && <p className="p-2 mb-4 text-white bg-red-500 rounded-md">{error}</p>}
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
           placeholder="Room Name"
           value={roomName}
           onChange={(e) => setRoomName(e.target.value)}
           required
+          className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
         />
         <textarea
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
         ></textarea>
         <div>
-          <label>
+          <label className="flex items-center">
             <input
               type="checkbox"
               checked={isPrivate}
               onChange={(e) => setIsPrivate(e.target.checked)}
+              className="mr-2"
             />
             Private Room
           </label>
@@ -104,39 +107,46 @@ const CreateRoom = ({ token, onRoomCreated }) => {
           placeholder="Tags (comma-separated)"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
+          className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
         />
         <div>
-          <h4>Users</h4>
-          {users.map((user) => (
-            <div key={user._id}>
-              <label>
-                <input
-                  type="checkbox"
-                  onChange={() => handleUserSelection(user._id)}
-                />
-                {user.username}
-              </label>
-            </div>
-          ))}
-        </div>
-        <div>
-          <h4>Admins</h4>
-          {selectedUsers.map((userId) => {
-            const user = users.find(u => u._id === userId);
-            return user ? (
+          <h4 className="mb-2 font-bold">Users</h4>
+          <div className="grid grid-cols-2 gap-2">
+            {users.map((user) => (
               <div key={user._id}>
-                <label>
+                <label className="flex items-center">
                   <input
                     type="checkbox"
-                    onChange={() => handleAdminSelection(user._id)}
+                    onChange={() => handleUserSelection(user._id)}
+                    className="mr-2"
                   />
                   {user.username}
                 </label>
               </div>
-            ) : null;
-          })}
+            ))}
+          </div>
         </div>
-        <button type="submit">Create Room</button>
+        <div>
+          <h4 className="mb-2 font-bold">Admins</h4>
+          <div className="grid grid-cols-2 gap-2">
+            {selectedUsers.map((userId) => {
+              const user = users.find(u => u._id === userId);
+              return user ? (
+                <div key={user._id}>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      onChange={() => handleAdminSelection(user._id)}
+                      className="mr-2"
+                    />
+                    {user.username}
+                  </label>
+                </div>
+              ) : null;
+            })}
+          </div>
+        </div>
+        <button type="submit" className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Create Room</button>
       </form>
     </div>
   );

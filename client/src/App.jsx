@@ -152,14 +152,17 @@ function App() {
 
   if (!token) {
     return (
-      <div className="App">
-        <div className="auth-container">
+      <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
           {isLogin ? (
             <Login setToken={setToken} />
           ) : (
             <Register setToken={setToken} />
           )}
-          <button onClick={() => setIsLogin(!isLogin)}>
+          <button 
+            onClick={() => setIsLogin(!isLogin)}
+            className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900"
+          >
             {isLogin ? 'Need to register?' : 'Already have an account?'}
           </button>
         </div>
@@ -168,74 +171,77 @@ function App() {
   }
 
   if (isLoading) {
-    return <div className="App">Loading...</div>;
+    return <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900 text-white">Loading...</div>;
   }
 
   return (
-    <div className="App">
-      <div className="top-nav">
-        <button onClick={() => setView('chat')}>Chat</button>
-        <button onClick={() => setView('profile')}>Profile</button>
-        <button onClick={toggleTheme}>
+    <div className="h-screen text-gray-800 bg-gray-100 dark:bg-gray-900 dark:text-white">
+      <div className="flex justify-between p-4 bg-white shadow-md dark:bg-gray-800">
+        <div>
+          <button onClick={() => setView('chat')} className="px-4 py-2 mr-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900">Chat</button>
+          <button onClick={() => setView('profile')} className="px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900">Profile</button>
+        </div>
+        <button onClick={toggleTheme} className="px-4 py-2 font-bold text-white bg-gray-500 rounded-md hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-900">
           Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
         </button>
       </div>
       {view === 'chat' ? (
-        <div className="main-container">
-          <div className="rooms-container">
-            <h2>Rooms</h2>
-            <button onClick={() => setShowCreateRoom(!showCreateRoom)} className="create-room-btn">
+        <div className="flex h-[calc(100vh-64px)]">
+          <div className="flex flex-col w-1/4 p-4 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="mb-4 text-xl font-bold">Rooms</h2>
+            <button onClick={() => setShowCreateRoom(!showCreateRoom)} className="w-full px-4 py-2 mb-4 font-bold text-white bg-green-500 rounded-md hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-900">
               {showCreateRoom ? 'Cancel' : 'Create Room'}
             </button>
             {showCreateRoom && <CreateRoom token={token} onRoomCreated={handleRoomCreated} />}
-            <ul>
+            <ul className="overflow-y-auto">
               {rooms.map((r) => (
-                <li key={r} onClick={() => setRoom(r)} className={r === room ? 'active' : ''}>
+                <li key={r} onClick={() => setRoom(r)} className={`p-2 cursor-pointer rounded-md ${r === room ? 'bg-blue-500 text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-700'}`}>
                   {r}
                 </li>
               ))}
             </ul>
-            <div className="user-info">
+            <div className="flex items-center justify-between pt-4 mt-auto border-t border-gray-200 dark:border-gray-700">
               <span>{user?.username}</span>
-              <button onClick={logout}>Logout</button>
+              <button onClick={logout} className="px-4 py-2 font-bold text-white bg-red-500 rounded-md hover:bg-red-700">Logout</button>
             </div>
           </div>
-          <div className="chat-wrapper">
-            <div className="chat-container">
-              <div className="chat-header">
-                <h3>Room: {room}</h3>
-              </div>
-              <div className="chat-messages">
-                {chat.map((msg, index) => (
-                  <div key={index} className={`message ${msg.sender === user?.username ? 'own-message' : ''}`}>
-                    <div className="message-sender">{msg.sender}</div>
-                    <div className="message-text">
+          <div className="flex flex-col flex-1">
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-bold">Room: {room}</h3>
+            </div>
+            <div className="flex-1 p-4 overflow-y-auto">
+              {chat.map((msg, index) => (
+                <div key={index} className={`flex mb-4 ${msg.sender === user?.username ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`p-3 rounded-lg ${msg.sender === user?.username ? 'bg-blue-500 text-white' : 'bg-gray-300 dark:bg-gray-700'}`}>
+                    <div className="text-sm font-bold">{msg.sender}</div>
+                    <div className="text-lg">
                       {msg.text.startsWith('http://') && (msg.text.endsWith('.jpg') || msg.text.endsWith('.png') || msg.text.endsWith('.gif')) ? (
-                        <img src={msg.text} alt="Uploaded content" style={{ maxWidth: '200px' }} />
+                        <img src={msg.text} alt="Uploaded content" className="max-w-xs rounded-md" />
                       ) : (
                         msg.text
                       )}
                     </div>
-                    <div className="message-time">{new Date(msg.timestamp).toLocaleTimeString()}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{new Date(msg.timestamp).toLocaleTimeString()}</div>
                   </div>
-                ))}
-              </div>
-              <form className="chat-form" onSubmit={sendMessage}>
-                <input
-                  type="text"
-                  value={message}
-                  placeholder="Type a message..."
-                  onChange={(e) => setMessage(e.target.value)}
-                />
-                <input type="file" id="file-input" style={{ display: 'none' }} onChange={handleFileUpload} />
-                <label htmlFor="file-input" className="file-input-label">📎</label>
-                <button type="submit">Send</button>
-              </form>
+                </div>
+              ))}
             </div>
+            <form className="flex p-4 border-t border-gray-200 dark:border-gray-700" onSubmit={sendMessage}>
+              <input
+                type="text"
+                value={message}
+                placeholder="Type a message..."
+                onChange={(e) => setMessage(e.target.value)}
+                className="flex-1 px-4 py-2 mr-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
+              />
+              <input type="file" id="file-input" className="hidden" onChange={handleFileUpload} />
+              <label htmlFor="file-input" className="p-2 text-gray-500 cursor-pointer hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">📎</label>
+              <button type="submit" className="px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Send</button>
+            </form>
           </div>
         </div>
       ) : (
-        <Profile user={user} token={token} onProfileUpdate={handleProfileUpdate} onContactsUpdate={fetchUser} />
+        <Profile user={user} token={token} onProfileUpdate={handleProfileUpdate} />
       )}
     </div>
   );

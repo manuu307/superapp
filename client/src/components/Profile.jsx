@@ -8,7 +8,7 @@ const Profile = ({ user, token, onProfileUpdate }) => {
   }
 
   return (
-    <div className="profile-view-container">
+    <div className="flex h-full p-4 space-x-4 bg-gray-100 dark:bg-gray-900">
       <ProfileSidebar user={user} token={token} onProfileUpdate={onProfileUpdate} />
       <ProfileMainContent user={user} token={token} onProfileUpdate={onProfileUpdate} />
     </div>
