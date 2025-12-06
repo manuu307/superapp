@@ -54,7 +54,29 @@ const UserSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  profilePicture: {
+    type: String,
+    default: ''
+  },
+  catalog: [{
+    title: {
+      type: String,
+      required: true
+    },
+    description: {
+      type: String
+    },
+    mediaUrl: {
+      type: String,
+      required: true
+    },
+    mediaType: {
+      type: String,
+      enum: ['image', 'video'],
+      required: true
+    }
+  }]
 });
 
 // Hash password before saving

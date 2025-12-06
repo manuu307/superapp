@@ -11,7 +11,7 @@ services:
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
       - MINIO_BUCKET=chat
-      - MINIO_PUBLIC_ENDPOINT=localhost
+      - MINIO_PUBLIC_ENDPOINT=192.168.1.10
     depends_on:
       - database
       - message_broker

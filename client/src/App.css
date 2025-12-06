@@ -1,35 +1,54 @@
+:root {
+  --background-color: #fff;
+  --text-color: #282c34;
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --border-color: #ddd;
+  --card-background: #f8f9fa;
+  --input-background: #fff;
+  --input-text-color: #282c34;
+  --button-background: #007bff;
+  --button-text-color: #fff;
+  --message-background: #f1f1f1;
+  --own-message-background: #007bff;
+}
+
+body.dark {
+  --background-color: #282c34;
+  --text-color: #fff;
+  --primary-color: #61dafb;
+  --secondary-color: #a8b2b9;
+  --border-color: #444;
+  --card-background: #3c3f41;
+  --input-background: #2f2f2f;
+  --input-text-color: #fff;
+  --button-background: #61dafb;
+  --button-text-color: #282c34;
+  --message-background: #4a4a4a;
+  --own-message-background: #007bff;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #282c34;
-  color: white;
+  background-color: var(--background-color);
+  color: var(--text-color);
   margin: 0;
-  /*display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;*/
 }
 
 .App {
   text-align: center;
   height: 100vh;
   overflow: hidden;
-  /*max-width: 1000px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #444;
-  border-radius: 8px;
-  width: 100%;
-  background-color: #3c3f41;*/
 }
 
 .main-container {
   display: flex;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 50px); /* Adjust for top-nav */
 }
 
 .chat-wrapper {
@@ -61,17 +80,17 @@ body {
 .auth-container input {
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #555;
-  background-color: #2f2f2f;
-  color: white;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-background);
+  color: var(--input-text-color);
 }
 
 .auth-container button {
   padding: 10px 20px;
   border-radius: 5px;
   border: none;
-  background-color: #61dafb;
-  color: #282c34;
+  background-color: var(--button-background);
+  color: var(--button-text-color);
   cursor: pointer;
   font-weight: bold;
 }
@@ -79,11 +98,12 @@ body {
 /* --- Rooms Container --- */
 .rooms-container {
   flex: 1;
-  border-right: 1px solid #444;
+  border-right: 1px solid var(--border-color);
   padding: 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  background-color: var(--card-background);
 }
 
 .rooms-container h2 {
@@ -104,7 +124,8 @@ body {
 }
 
 .rooms-container li.active {
-  background-color: #4a4a4a;
+  background-color: var(--primary-color);
+  color: var(--button-text-color);
 }
 
 .user-info {
@@ -129,16 +150,18 @@ body {
 }
 
 .top-nav {
-  background-color: #333;
+  background-color: var(--card-background);
   padding: 10px;
   display: flex;
   justify-content: center;
   gap: 10px;
+  border-bottom: 1px solid var(--border-color);
+  height: 30px;
 }
 
 .top-nav button {
-  background-color: #555;
-  color: white;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
   border: none;
   padding: 10px 20px;
   cursor: pointer;
@@ -146,60 +169,23 @@ body {
 }
 
 .top-nav button:hover {
-  background-color: #777;
+  opacity: 0.8;
 }
 
-.profile-container {
-  padding: 20px;
-  max-width: 600px;
-  margin: 20px auto;
-  background-color: #f0f0f0;
-  border-radius: 8px;
-}
-
-.profile-container h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.profile-container form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.profile-container input,
-.profile-container textarea {
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.profile-container button {
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-}
-
-.profile-container button:hover {
-  background-color: #0056b3;
-}
-
-/* New Profile View Styles */
 .profile-view-container {
   display: flex;
   padding: 20px;
   gap: 20px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  height: 100%;
 }
 
 .profile-sidebar {
   width: 300px;
   flex-shrink: 0;
   padding: 20px;
-  background-color: #f8f9fa;
+  background-color: var(--card-background);
   border-radius: 8px;
 }
 
@@ -213,7 +199,7 @@ body {
 }
 
 .profile-sidebar a {
-  color: #007bff;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
@@ -223,7 +209,7 @@ body {
 
 .profile-sidebar .tag {
   display: inline-block;
-  background-color: #e0e0e0;
+  background-color: var(--secondary-color);
   padding: 5px 10px;
   border-radius: 15px;
   margin-right: 5px;
@@ -237,8 +223,8 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--button-background);
+  color: var(--button-text-color);
 }
 
 .profile-sidebar form {
@@ -251,13 +237,15 @@ body {
 .profile-sidebar form textarea {
   padding: 8px;
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-background);
+  color: var(--input-text-color);
 }
 
 .profile-main-content {
   flex-grow: 1;
   padding: 20px;
-  background-color: #f8f9fa;
+  background-color: var(--card-background);
   border-radius: 8px;
 }
 
@@ -272,7 +260,7 @@ body {
 
 .profile-main-content li {
   padding: 8px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -286,7 +274,9 @@ body {
   padding: 8px;
   margin-right: 10px;
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-background);
+  color: var(--input-text-color);
 }
 
 .contacts-section .add-contact button {
@@ -301,22 +291,24 @@ body {
 .chat-form {
   display: flex;
   padding: 10px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--border-color);
 }
 
 .chat-form input[type="text"] {
   flex-grow: 1;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 20px;
   margin-right: 10px;
+  background-color: var(--input-background);
+  color: var(--input-text-color);
 }
 
 .chat-form button {
   padding: 10px 20px;
   border: none;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--button-background);
+  color: var(--button-text-color);
   border-radius: 20px;
   cursor: pointer;
 }
@@ -327,11 +319,10 @@ body {
   font-size: 20px;
 }
 
-
 /* --- Create Room --- */
 .rooms-container .create-room-btn {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--button-background);
+  color: var(--button-text-color);
   border: none;
   padding: 10px;
   border-radius: 5px;
@@ -341,7 +332,7 @@ body {
 }
 
 .create-room-form {
-  background-color: #2f2f2f;
+  background-color: var(--background-color);
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 15px;
@@ -362,9 +353,9 @@ body {
 .create-room-form textarea {
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #555;
-  background-color: #3c3f41;
-  color: white;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-background);
+  color: var(--input-text-color);
   width: 95%;
 }
 
@@ -381,7 +372,7 @@ body {
 
 .create-room-form h4 {
   margin-bottom: 5px;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 5px;
 }
 
@@ -393,8 +384,8 @@ body {
   padding: 10px 20px;
   border-radius: 5px;
   border: none;
-  background-color: #61dafb;
-  color: #282c34;
+  background-color: var(--button-background);
+  color: var(--button-text-color);
   cursor: pointer;
   font-weight: bold;
   margin-top: 10px;
@@ -408,19 +399,18 @@ body {
   margin-bottom: 10px;
 }
 
-
-
 /* --- Chat Container --- */
 .chat-container {
   display: flex;
   flex-direction: column;
   height: 100%;
+  background-color: var(--background-color);
 }
 
 .chat-header {
-  background-color: #20232a;
+  background-color: var(--card-background);
   padding: 10px;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .chat-messages {
@@ -437,20 +427,21 @@ body {
   padding: 10px;
   border-radius: 8px;
   max-width: 70%;
-  background-color: #4a4a4a;
+  background-color: var(--message-background);
   align-self: flex-start;
 }
 
 .message.own-message {
-  background-color: #007bff;
+  background-color: var(--own-message-background);
   align-self: flex-end;
+  color: #fff;
 }
 
 .message-sender {
   font-weight: bold;
   font-size: 0.8em;
   margin-bottom: 5px;
-  color: #61dafb;
+  color: var(--primary-color);
 }
 
 .message.own-message .message-sender {
@@ -472,17 +463,17 @@ body {
 .chat-form {
   display: flex;
   padding: 10px;
-  border-top: 1px solid #444;
-  background-color: #20232a;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--card-background);
 }
 
 .chat-form input {
   flex-grow: 1;
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #555;
-  background-color: #2f2f2f;
-  color: white;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-background);
+  color: var(--input-text-color);
 }
 
 .chat-form button {
@@ -490,8 +481,91 @@ body {
   margin-left: 10px;
   border-radius: 5px;
   border: none;
-  background-color: #61dafb;
-  color: #282c34;
+  background-color: var(--button-background);
+  color: var(--button-text-color);
   cursor: pointer;
   font-weight: bold;
+}
+
+/* Profile Picture */
+.profile-picture-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--primary-color);
+}
+
+/* Catalog */
+.catalog-section {
+  margin-top: 20px;
+}
+
+.catalog-carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--background-color);
+}
+
+.catalog-card {
+  flex: 0 0 250px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  background-color: var(--card-background);
+}
+
+.catalog-card img,
+.catalog-card video {
+  max-width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: var(--card-background);
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+  color: var(--text-color);
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: var(--text-color);
+  text-decoration: none;
+  cursor: pointer;
 }

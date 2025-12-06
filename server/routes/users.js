@@ -94,4 +94,94 @@ router.delete('/contacts/remove/:userId', auth, async (req, res) => {
   }
 });
 
+// Update profile picture
+router.put('/profile-picture', auth, async (req, res) => {
+  try {
+    const { url } = req.body;
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    user.profilePicture = url;
+    await user.save();
+    res.json({ profilePicture: user.profilePicture });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Add a catalog item
+router.post('/catalog', auth, async (req, res) => {
+  try {
+    const { title, description, mediaUrl, mediaType } = req.body;
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    if (user.catalog.length >= 10) {
+      return res.status(400).json({ msg: 'Catalog cannot exceed 10 items' });
+    }
+
+    user.catalog.push({ title, description, mediaUrl, mediaType });
+    await user.save();
+    res.json(user.catalog);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Update a catalog item
+router.put('/catalog/:itemId', auth, async (req, res) => {
+  try {
+    const { title, description, mediaUrl, mediaType } = req.body;
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    const item = user.catalog.id(req.params.itemId);
+
+    if (!item) {
+      return res.status(404).json({ msg: 'Catalog item not found' });
+    }
+
+    item.title = title || item.title;
+    item.description = description || item.description;
+    item.mediaUrl = mediaUrl || item.mediaUrl;
+    item.mediaType = mediaType || item.mediaType;
+
+    await user.save();
+    res.json(user.catalog);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Delete a catalog item
+router.delete('/catalog/:itemId', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    user.catalog.pull(req.params.itemId);
+
+    await user.save();
+    res.json(user.catalog);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;

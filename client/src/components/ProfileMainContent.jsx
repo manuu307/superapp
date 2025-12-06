@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import Catalog from './Catalog';
 
-const ProfileMainContent = ({ user, token, onContactsUpdate }) => {
+const ProfileMainContent = ({ user, token, onProfileUpdate }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
@@ -24,7 +25,7 @@ const ProfileMainContent = ({ user, token, onContactsUpdate }) => {
         method: 'POST',
         headers: { 'x-auth-token': token }
       });
-      onContactsUpdate();
+      onProfileUpdate();
     } catch (err) {
       console.error(err);
     }
@@ -36,7 +37,7 @@ const ProfileMainContent = ({ user, token, onContactsUpdate }) => {
         method: 'DELETE',
         headers: { 'x-auth-token': token }
       });
-      onContactsUpdate();
+      onProfileUpdate();
     } catch (err) {
       console.error(err);
     }
@@ -50,6 +51,7 @@ const ProfileMainContent = ({ user, token, onContactsUpdate }) => {
           {user.rooms && user.rooms.map(room => <li key={room}>{room}</li>)}
         </ul>
       </div>
+      <Catalog catalog={user.catalog} token={token} onUpdate={onProfileUpdate} />
       <div className="contacts-section">
         <h4>Contacts</h4>
         <ul>

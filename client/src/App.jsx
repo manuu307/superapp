@@ -19,31 +19,45 @@ function App() {
   const [showCreateRoom, setShowCreateRoom] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [view, setView] = useState('chat'); // 'chat' or 'profile'
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+
+  useEffect(() => {
+    document.body.className = theme;
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+  };
+
+  const fetchUser = async () => {
+    try {
+      const response = await fetch('/api/auth/me', {
+        headers: {
+          'x-auth-token': token,
+        },
+      });
+      if (response.status === 401) {
+        logout();
+        return;
+      }
+      const data = await response.json();
+      setUser(data);
+      setRooms(data.rooms || []);
+      if (data.rooms && !data.rooms.includes(room)) {
+        setRoom(data.rooms[0] || 'General');
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      logout();
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (token) {
-      const fetchUser = async () => {
-        try {
-          const response = await fetch('/api/auth/me', {
-            headers: {
-              'x-auth-token': token,
-            },
-          });
-          const data = await response.json();
-          setUser(data);
-          setRooms(data.rooms || []);
-          if (data.rooms && !data.rooms.includes(room)) {
-            setRoom(data.rooms[0] || 'General');
-          }
-        } catch (error) {
-          console.error('Error fetching user:', error);
-          // Handle token expiration or invalid token
-          localStorage.removeItem('token');
-          setToken(null);
-        } finally {
-          setIsLoading(false);
-        }
-      };
       fetchUser();
     } else {
       setIsLoading(false);
@@ -132,22 +146,8 @@ function App() {
     }
   };
 
-  const handleProfileUpdate = (updatedUser) => {
-    setUser(updatedUser);
-  };
-
-  const fetchUser = async () => {
-    try {
-      const response = await fetch('/api/auth/me', {
-        headers: {
-          'x-auth-token': token,
-        },
-      });
-      const data = await response.json();
-      setUser(data);
-    } catch (error) {
-      console.error('Error fetching user:', error);
-    }
+  const handleProfileUpdate = () => {
+    fetchUser();
   };
 
   if (!token) {
@@ -176,6 +176,9 @@ function App() {
       <div className="top-nav">
         <button onClick={() => setView('chat')}>Chat</button>
         <button onClick={() => setView('profile')}>Profile</button>
+        <button onClick={toggleTheme}>
+          Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
+        </button>
       </div>
       {view === 'chat' ? (
         <div className="main-container">
