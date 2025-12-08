@@ -43,6 +43,11 @@ const CreateRoom = ({ token, onRoomCreated }) => {
     e.preventDefault();
     setError(null);
 
+    if (!roomName) {
+      setError('Room name is required.');
+      return;
+    }
+
     try {
       const response = await fetch('/api/rooms', {
         method: 'POST',
@@ -153,5 +158,3 @@ const CreateRoom = ({ token, onRoomCreated }) => {
 };
 
 export default CreateRoom;
-
-

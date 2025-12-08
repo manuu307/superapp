@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Catalog from './Catalog';
+import { AuthContext } from '../context/AuthContext';
 
-const ProfileMainContent = ({ user, token, onProfileUpdate }) => {
+const ProfileMainContent = () => {
+  const { user, token, refetchUser } = useContext(AuthContext);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
@@ -25,7 +27,7 @@ const ProfileMainContent = ({ user, token, onProfileUpdate }) => {
         method: 'POST',
         headers: { 'x-auth-token': token }
       });
-      onProfileUpdate();
+      refetchUser();
     } catch (err) {
       console.error(err);
     }
@@ -37,11 +39,15 @@ const ProfileMainContent = ({ user, token, onProfileUpdate }) => {
         method: 'DELETE',
         headers: { 'x-auth-token': token }
       });
-      onProfileUpdate();
+      refetchUser();
     } catch (err) {
       console.error(err);
     }
   };
+
+  if (!user) {
+    return <div>Loading...</div>
+  }
 
   return (
     <>
@@ -52,7 +58,7 @@ const ProfileMainContent = ({ user, token, onProfileUpdate }) => {
           {user.rooms && user.rooms.map(room => <li key={room} className="p-2 bg-gray-200 rounded-md dark:bg-gray-700">{room}</li>)}
         </ul>
       </div>
-      <Catalog catalog={user.catalog} token={token} onUpdate={onProfileUpdate} />
+      <Catalog />
     </div>
         <div className="flex-1 p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
         <h4 className="mb-2 text-xl font-bold">Contacts</h4>

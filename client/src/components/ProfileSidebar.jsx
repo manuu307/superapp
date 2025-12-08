@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
-const ProfileSidebar = ({ user, token, onProfileUpdate }) => {
+const ProfileSidebar = () => {
+  const { user, token, refetchUser } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -11,6 +13,7 @@ const ProfileSidebar = ({ user, token, onProfileUpdate }) => {
     website: ''
   });
   const [profilePictureFile, setProfilePictureFile] = useState(null);
+  const [error, setError] = useState('');
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -75,19 +78,26 @@ const ProfileSidebar = ({ user, token, onProfileUpdate }) => {
         throw new Error('Profile picture update failed');
       }
 
-      const updatedUser = await updateRes.json();
-      onProfileUpdate({ ...user, profilePicture: updatedUser.profilePicture });
+      refetchUser();
       setProfilePictureFile(null);
     } catch (err) {
       console.error(err);
+      setError('Failed to upload profile picture.');
     }
   };
 
 
   const onSubmit = async e => {
     e.preventDefault();
+    setError('');
+
+    if (!name || !lastname) {
+      setError('Name and Last Name are required.');
+      return;
+    }
+
     try {
-      const response = await fetch('/api/users/profile', {
+      await fetch('/api/users/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -95,18 +105,27 @@ const ProfileSidebar = ({ user, token, onProfileUpdate }) => {
         },
         body: JSON.stringify(formData)
       });
-      const updatedUser = await response.json();
-      onProfileUpdate(updatedUser);
+      refetchUser();
       setIsEditing(false);
     } catch (err) {
       console.error(err);
+      setError('Failed to update profile.');
     }
   };
+
+  if (!user) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="w-1/4 p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
       <div className="text-center">
-        <img src={user.profilePicture || 'https://via.placeholder.com/150'} alt="Profile" className="object-cover w-32 h-32 mx-auto rounded-full" />
+        <img
+          src={user.profilePicture || 'https://via.placeholder.com/150'}
+          alt="Profile"
+          className="object-cover w-32 h-32 mx-auto rounded-full cursor-pointer"
+          onClick={handleUploadClick}
+        />
         <input
           type="file"
           ref={fileInputRef}
@@ -114,14 +133,14 @@ const ProfileSidebar = ({ user, token, onProfileUpdate }) => {
           className="hidden"
           accept="image/*"
         />
-        <button onClick={handleUploadClick} className="w-full px-4 py-2 mt-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Change Picture</button>
         {profilePictureFile && <button onClick={uploadProfilePicture} className="w-full px-4 py-2 mt-2 font-bold text-white bg-green-500 rounded-md hover:bg-green-700">Save Picture</button>}
       </div>
       <h3 className="text-2xl font-bold text-center">{user.username}</h3>
       {isEditing ? (
         <form onSubmit={onSubmit} className="space-y-4">
-          <input type="text" placeholder="Name" name="name" value={name} onChange={onChange} className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700" />
-          <input type="text" placeholder="Last Name" name="lastname" value={lastname} onChange={onChange} className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700" />
+          {error && <p className="text-red-500 text-center">{error}</p>}
+          <input type="text" placeholder="Name" name="name" value={name} onChange={onChange} required className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700" />
+          <input type="text" placeholder="Last Name" name="lastname" value={lastname} onChange={onChange} required className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700" />
           <input type="text" placeholder="Nickname" name="nickname" value={nickname} onChange={onChange} className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700" />
           <input type="text" placeholder="Tags (comma separated)" value={tags.join(', ')} onChange={onTagsChange} className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700" />
           <textarea placeholder="Description" name="description" value={description} onChange={onChange} className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"></textarea>
@@ -136,7 +155,7 @@ const ProfileSidebar = ({ user, token, onProfileUpdate }) => {
           <p><strong>Nickname:</strong> {user.nickname}</p>
           <p><strong>Description:</strong> {user.description}</p>
           <p><strong>Website:</strong> <a href={user.website} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{user.website}</a></p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex py-2 flex-wrap gap-2">
             {user.tags && user.tags.map(tag => <span key={tag} className="px-2 py-1 text-sm text-white bg-blue-500 rounded-full">{tag}</span>)}
           </div>
           <button onClick={() => setIsEditing(true)} className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Edit Profile</button>
