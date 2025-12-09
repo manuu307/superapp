@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint"
   },
+  "proxy": "http://192.168.1.10:4000",
   "dependencies": {
     "@types/react-icons": "^2.2.7",
     "autoprefixer": "^10.4.22",

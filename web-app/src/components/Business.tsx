@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useCallback } from 'react';
 import Product from './Product';
-import Catalog from './Catalog';
+import BusinessCatalog from './BusinessCatalog';
 
 interface BusinessItem {
   _id: string;
@@ -115,7 +115,7 @@ const Business = () => {
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Product businessId={selectedBusiness._id} />
-          <Catalog /> {/* Catalog does not take businessId prop */}
+          <BusinessCatalog businessId={selectedBusiness._id} />
         </div>
       </div>
     );

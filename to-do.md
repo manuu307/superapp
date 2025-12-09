@@ -2,7 +2,8 @@
 
 ## Overflow and screen size
 
-- The lower side of the screen is getting caught by the overflow hidden
-- Pretty icon for "profile" and "chats" menu buttons
-- Implement pretty nav menu
+- Auto scroll to the last message of a chat
+- Start on an empty screen chat with a drawing similar to telegram or whatsapp (non chat room)
+- Navigation fixed on top
+- 
 

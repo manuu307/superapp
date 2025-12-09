@@ -20,7 +20,7 @@ interface AuthContextType {
   // Add other AuthContext properties if they are used in this component
 }
 
-const Catalog = () => {
+const UsersCatalog = () => {
   const { user } = useContext(AuthContext) as AuthContextType;
   const [selectedItem, setSelectedItem] = useState<CatalogItem | null>(null);
 
@@ -64,4 +64,4 @@ const Catalog = () => {
   );
 };
 
-export default Catalog;
+export default UsersCatalog;

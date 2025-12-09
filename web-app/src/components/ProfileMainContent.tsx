@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useContext } from 'react';
-import Catalog from './Catalog';
+import UsersCatalog from './UsersCatalog';
 import { AuthContext } from '../context/AuthContext';
 
 interface Contact {
@@ -89,7 +89,7 @@ const ProfileMainContent = () => {
           {user.rooms && user.rooms.map((room: string) => <li key={room} className="p-2 bg-gray-200 rounded-md dark:bg-gray-700">{room}</li>)}
         </ul>
       </div>
-      <Catalog />
+      <UsersCatalog />
     </div>
         <div className="flex-1 p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
         <h4 className="mb-2 text-xl font-bold">Contacts</h4>

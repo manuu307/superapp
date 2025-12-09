@@ -1,0 +1,390 @@
+openapi: 3.0.0
+info:
+  title: Super App API
+  description: API documentation for the Superapp project.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+tags:
+  - name: Auth
+    description: Authentication endpoints
+  - name: Business
+    description: Business management endpoints
+  - name: Files
+    description: File upload endpoints
+  - name: Products
+    description: Product management endpoints
+  - name: Rooms
+    description: Room management endpoints
+  - name: Users
+    description: User management endpoints
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: User registered successfully
+        "400":
+          description: User already exists
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: User logged in successfully
+        "400":
+          description: Invalid credentials
+  /auth/me:
+    get:
+      tags:
+        - Auth
+      summary: Get user from token
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User data
+  /business:
+    post:
+      tags:
+        - Business
+      summary: Create a business
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                picture:
+                  type: string
+      responses:
+        "200":
+          description: Business created successfully
+    get:
+      tags:
+        - Business
+      summary: Get all businesses for a user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of businesses
+  /files/upload:
+    post:
+      tags:
+        - Files
+      summary: Upload a file
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: File uploaded successfully
+  /products:
+    post:
+      tags:
+        - Products
+      summary: Create a product for a business
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                short_description:
+                  type: string
+                description:
+                  type: string
+                picture:
+                  type: string
+                price_before:
+                  type: number
+                price_after:
+                  type: number
+                businessId:
+                  type: string
+      responses:
+        "200":
+          description: Product created successfully
+  /products/{businessId}:
+    get:
+      tags:
+        - Products
+      summary: Get all products for a business
+      parameters:
+        - in: path
+          name: businessId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of products
+  /rooms:
+    post:
+      tags:
+        - Rooms
+      summary: Create a room
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                isPrivate:
+                  type: boolean
+                tags:
+                  type: array
+                  items:
+                    type: string
+                users:
+                  type: array
+                  items:
+                    type: string
+                admins:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Room created successfully
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of users
+  /users/profile:
+    put:
+      tags:
+        - Users
+      summary: Update user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                lastname:
+                  type: string
+                nickname:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+                description:
+                  type: string
+                website:
+                  type: string
+      responses:
+        "200":
+          description: User profile updated successfully
+  /users/search:
+    get:
+      tags:
+        - Users
+      summary: Search users
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of users found
+  /users/contacts/add/{userId}:
+    post:
+      tags:
+        - Users
+      summary: Add a contact
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Contact added successfully
+  /users/contacts/remove/{userId}:
+    delete:
+      tags:
+        - Users
+      summary: Remove a contact
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Contact removed successfully
+  /users/profile-picture:
+    put:
+      tags:
+        - Users
+      summary: Update profile picture
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+      responses:
+        "200":
+          description: Profile picture updated successfully
+  /users/catalog:
+    post:
+      tags:
+        - Users
+      summary: Add a catalog item
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                mediaUrl:
+                  type: string
+                mediaType:
+                  type: string
+      responses:
+        "200":
+          description: Catalog item added successfully
+  /users/catalog/{itemId}:
+    put:
+      tags:
+        - Users
+      summary: Update a catalog item
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: itemId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                mediaUrl:
+                  type: string
+                mediaType:
+                  type: string
+      responses:
+        "200":
+          description: Catalog item updated successfully
+    delete:
+      tags:
+        - Users
+      summary: Delete a catalog item
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: itemId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Catalog item deleted successfully
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
