@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useCallback } from 'react';
-import Product from './Product';
 import BusinessCatalog from './BusinessCatalog';
+import Product from './Product';
 
 interface BusinessItem {
   _id: string;
@@ -14,6 +14,7 @@ const Business = () => {
   const [name, setName] = useState<string>('');
   const [pictureFile, setPictureFile] = useState<File | null>(null);
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessItem | null>(null);
+  const [editingBusiness, setEditingBusiness] = useState<BusinessItem | null>(null);
 
   const fetchBusinesses = useCallback(async () => {
     const token = localStorage.getItem('token');
@@ -105,6 +106,123 @@ const Business = () => {
     }
   };
 
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingBusiness) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    let pictureUrl: string | undefined = editingBusiness.picture;
+
+    if (pictureFile) {
+      const formData = new FormData();
+      formData.append('file', pictureFile);
+
+      try {
+        const uploadRes = await fetch('/api/files/upload', {
+          method: 'POST',
+          headers: { 'x-auth-token': token },
+          body: formData
+        });
+
+        if (!uploadRes.ok) throw new Error('File upload failed');
+
+        const { url } = await uploadRes.json();
+        pictureUrl = url;
+      } catch (err) {
+        console.error(err);
+        return;
+      }
+    }
+
+    try {
+      const response = await fetch(`/api/business/${editingBusiness._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({ name, picture: pictureUrl })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update business');
+      }
+
+      const updatedBusiness = await response.json();
+      setBusinesses(businesses.map(b => b._id === editingBusiness._id ? updatedBusiness : b));
+      setEditingBusiness(null);
+      setName('');
+      setPictureFile(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleEdit = (business: BusinessItem) => {
+    setEditingBusiness(business);
+    setName(business.name);
+    setPictureFile(null);
+  };
+
+  const handleDelete = async (businessId: string) => {
+    if (window.confirm('Are you sure you want to delete this business?')) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Handle case where token is not available
+        return;
+      }
+      try {
+        const res = await fetch(`/api/business/${businessId}`, {
+          method: 'DELETE',
+          headers: { 'x-auth-token': token }
+        });
+        if (!res.ok) {
+          throw new Error('Failed to delete business');
+        }
+        setBusinesses(businesses.filter(b => b._id !== businessId));
+      } catch (error) {
+        console.error('Error deleting business:', error);
+        // Optionally set an error state
+      }
+    }
+  };
+
+  if (editingBusiness) {
+    return (
+      <div className="p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <h2 className="text-2xl font-bold">Edit Business</h2>
+        <form onSubmit={handleUpdate} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Business Name"
+            value={name}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+            required
+            className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
+          />
+          <div>
+            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300" htmlFor="business-picture">
+              Business Picture
+            </label>
+            <input
+              id="business-picture"
+              type="file"
+              onChange={handleFileChange}
+              className="w-full px-4 py-2 bg-gray-200 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
+            />
+          </div>
+          <div className="flex space-x-4">
+            <button type="submit" className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Save</button>
+            <button type="button" onClick={() => setEditingBusiness(null)} className="w-full px-4 py-2 font-bold text-white bg-gray-500 rounded-md hover:bg-gray-700">Cancel</button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
   if (selectedBusiness) {
     return (
       <div className="p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
@@ -148,9 +266,15 @@ const Business = () => {
       </form>
       <ul className="space-y-2">
         {businesses.map((business: BusinessItem) => (
-          <li key={business._id} onClick={() => setSelectedBusiness(business)} className="flex items-center p-2 space-x-4 bg-gray-200 rounded-md cursor-pointer dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">
-            <img src={business.picture || 'https://via.placeholder.com/50'} alt={business.name} className="w-12 h-12 rounded-full" />
-            <span>{business.name}</span>
+          <li key={business._id} className="flex items-center justify-between p-2 space-x-4 bg-gray-200 rounded-md dark:bg-gray-700">
+            <div onClick={() => setSelectedBusiness(business)} className="flex items-center flex-grow space-x-4 cursor-pointer">
+              <img src={business.picture || 'https://via.placeholder.com/50'} alt={business.name} className="w-12 h-12 rounded-full" />
+              <span>{business.name}</span>
+            </div>
+            <div>
+              <button onClick={(e) => { e.stopPropagation(); handleEdit(business); }} className="px-3 py-1 mr-2 text-white bg-blue-500 rounded-md hover:bg-blue-700">Edit</button>
+              <button onClick={(e) => { e.stopPropagation(); handleDelete(business._id); }} className="px-3 py-1 text-white bg-red-500 rounded-md hover:bg-red-700">Delete</button>
+            </div>
           </li>
         ))}
       </ul>
