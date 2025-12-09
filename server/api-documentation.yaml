@@ -103,6 +103,48 @@ paths:
       responses:
         "200":
           description: List of businesses
+  /business/{id}:
+    put:
+      tags:
+        - Business
+      summary: Update a business
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                picture:
+                  type: string
+      responses:
+        "200":
+          description: Business updated successfully
+    delete:
+      tags:
+        - Business
+      summary: Delete a business
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Business removed successfully
   /files/upload:
     post:
       tags:
@@ -168,6 +210,56 @@ paths:
       responses:
         "200":
           description: List of products
+  /products/{id}:
+    put:
+      tags:
+        - Products
+      summary: Update a product
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                short_description:
+                  type: string
+                description:
+                  type: string
+                picture:
+                  type: string
+                price_before:
+                  type: number
+                price_after:
+                  type: number
+      responses:
+        "200":
+          description: Product updated successfully
+    delete:
+      tags:
+        - Products
+      summary: Delete a product
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product removed successfully
   /rooms:
     post:
       tags:

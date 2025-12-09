@@ -56,4 +56,62 @@ router.get('/:businessId', async (req, res) => {
   }
 });
 
+// @route   PUT api/products/:id
+// @desc    Update a product
+// @access  Private
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const { name, short_description, description, picture, price_before, price_after } = req.body;
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ msg: 'Product not found' });
+    }
+
+    const business = await Business.findById(product.business);
+
+    if (business.owner.toString() !== req.user.id && !business.admins.map(admin => admin.toString()).includes(req.user.id)) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    product.name = name || product.name;
+    product.short_description = short_description || product.short_description;
+    product.description = description || product.description;
+    product.picture = picture || product.picture;
+    product.price_before = price_before || product.price_before;
+    product.price_after = price_after || product.price_after;
+
+    await product.save();
+    res.json(product);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   DELETE api/products/:id
+// @desc    Delete a product
+// @access  Private
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ msg: 'Product not found' });
+    }
+
+    const business = await Business.findById(product.business);
+
+    if (business.owner.toString() !== req.user.id && !business.admins.map(admin => admin.toString()).includes(req.user.id)) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    await product.remove();
+    res.json({ msg: 'Product removed' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
