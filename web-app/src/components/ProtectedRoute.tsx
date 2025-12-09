@@ -16,6 +16,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { token, loading } = useContext(AuthContext) as AuthContextType;
   const router = useRouter();
 
+  console.log('ProtectedRoute - loading:', loading, 'token:', token);
+
   if (loading) {
     return <div>Loading...</div>;
   }

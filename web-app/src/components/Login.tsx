@@ -47,7 +47,7 @@ const Login = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold text-center text-white">Login</h2>
+      <h2 className="text-2xl font-bold text-center">Login</h2>
       {error && <p className="text-red-500 text-center">{error}</p>}
       <input
         type="email"

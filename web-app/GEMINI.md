@@ -36,10 +36,8 @@ The system is composed of four main microservices, orchestrated by Docker Compos
     - `client/src/components/Login.jsx`: Login form.
     - `client/src/components/Register.jsx`: Registration form.
 - **To Do**
-    - Review all .tsx files from folders src/app src/components src/context and adapt them to TypeScript (they were written in javascript)
-    - Verify if the pages are well connected to he components
-    - Verify if the components and pages are well connected to the context provider
-    - Review if the react context is configured correctly 
+    - Protect de authenticated routes redirecting to "/login" if the token is expired or null
+    - Investigate why the tailwind config is not affecting the styles when for example i toggle from light theme to dark theme (components/ThemeToggleButton.tsx)
 ## 4. User Authentication
 - **JWT-based Authentication:** User registration and login are handled via REST endpoints (`/api/auth/register`, `/api/auth/login`). Upon successful authentication, a JSON Web Token (JWT) is issued.
 - **Protected Routes:** API routes for user management (`/api/users`) are protected using a JWT middleware.

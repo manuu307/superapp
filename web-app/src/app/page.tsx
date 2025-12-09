@@ -100,6 +100,8 @@ const Chat = () => {
 }
 
 
+import { withProtectedRoute } from './withProtectedRoute';
+
 const SocialPage = () => {
   return (
     <SocialProvider>
@@ -108,4 +110,4 @@ const SocialPage = () => {
   );
 };
 
-export default SocialPage;
+export default withProtectedRoute(SocialPage);
