@@ -14,10 +14,10 @@ interface ProductItem {
 
 interface ProductProps {
   businessId: string;
+  onProductsChange: () => void;
 }
 
-const Product: React.FC<ProductProps> = ({ businessId }) => {
-  const [products, setProducts] = useState<ProductItem[]>([]);
+const Product: React.FC<ProductProps> = ({ businessId, onProductsChange }) => {
   const [name, setName] = useState<string>('');
   const [shortDescription, setShortDescription] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -27,32 +27,12 @@ const Product: React.FC<ProductProps> = ({ businessId }) => {
   const [error, setError] = useState<string>('');
   const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
 
-  const fetchProducts = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/products/${businessId}`);
-      if (!res.ok) {
-        throw new Error('Failed to fetch products');
-      }
-      const data: ProductItem[] = await res.json();
-      setProducts(data);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || 'Failed to fetch products.');
-    }
-  }, [businessId]);
-
-  useEffect(() => {
-    if (businessId) {
-      fetchProducts();
-    }
-  }, [businessId, fetchProducts]);
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setPictureFile(e.target.files[0]);
     }
   };
-
+  
   const handleEdit = (product: ProductItem) => {
     setEditingProduct(product);
     setName(product.name);
@@ -78,7 +58,7 @@ const Product: React.FC<ProductProps> = ({ businessId }) => {
         if (!res.ok) {
           throw new Error('Failed to delete product');
         }
-        setProducts(products.filter(p => p._id !== productId));
+        onProductsChange();
       } catch (error: any) {
         console.error('Error deleting product:', error);
         setError(error.message || 'Failed to delete product.');
@@ -143,7 +123,7 @@ const Product: React.FC<ProductProps> = ({ businessId }) => {
       }
 
       const updatedProduct = await response.json();
-      setProducts(products.map(p => p._id === editingProduct._id ? updatedProduct : p));
+      onProductsChange();
       setEditingProduct(null);
       setName('');
       setShortDescription('');
@@ -229,7 +209,7 @@ const Product: React.FC<ProductProps> = ({ businessId }) => {
       setPictureFile(null);
       setPriceBefore('');
       setPriceAfter('');
-      fetchProducts();
+      onProductsChange();
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'An error occurred while creating the product.');
@@ -351,23 +331,6 @@ const Product: React.FC<ProductProps> = ({ businessId }) => {
           Create Product
         </button>
       </form>
-      <div>
-        <h3 className="text-xl font-bold">Products</h3>
-        <ul className="space-y-2">
-          {products.map((product: ProductItem) => (
-            <li key={product._id} className="flex items-center justify-between p-2 space-x-4 bg-gray-200 rounded-md dark:bg-gray-700">
-              <div className="flex items-center flex-grow space-x-4">
-                <img src={product.picture || 'https://via.placeholder.com/50'} alt={product.name} className="w-12 h-12 rounded-full" />
-                <span>{product.name}</span>
-              </div>
-              <div>
-                <button onClick={() => handleEdit(product)} className="px-3 py-1 mr-2 text-white bg-blue-500 rounded-md hover:bg-blue-700">Edit</button>
-                <button onClick={() => handleDelete(product._id)} className="px-3 py-1 text-white bg-red-500 rounded-md hover:bg-red-700">Delete</button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 };

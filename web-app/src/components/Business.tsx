@@ -15,6 +15,32 @@ const Business = () => {
   const [pictureFile, setPictureFile] = useState<File | null>(null);
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessItem | null>(null);
   const [editingBusiness, setEditingBusiness] = useState<BusinessItem | null>(null);
+  const [products, setProducts] = useState<ProductItem[]>([]);
+
+  const fetchProducts = useCallback(async (businessId: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/products/${businessId}`, {
+        headers: {
+          'x-auth-token': token || '',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      const data = await response.json();
+      setProducts(data);
+    } catch (err: any) {
+      console.error(err);
+    }
+  }, []);
+
+  const onProductsChange = () => {
+    if (selectedBusiness) {
+      fetchProducts(selectedBusiness._id);
+    }
+  };
+
 
   const fetchBusinesses = useCallback(async () => {
     const token = localStorage.getItem('token');
@@ -41,11 +67,28 @@ const Business = () => {
     fetchBusinesses();
   }, [fetchBusinesses]);
 
+  useEffect(() => {
+    if (selectedBusiness) {
+      fetchProducts(selectedBusiness._id);
+    }
+  }, [selectedBusiness, fetchProducts]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setPictureFile(e.target.files[0]);
     }
   };
+interface ProductItem {
+  _id: string;
+  name: string;
+  short_description: string;
+  description: string;
+  picture: string;
+  price_before: number;
+  price_after: number;
+  business: string;
+}
+
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -232,8 +275,8 @@ const Business = () => {
           <h2 className="text-2xl font-bold">{selectedBusiness.name}</h2>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Product businessId={selectedBusiness._id} />
-          <BusinessCatalog businessId={selectedBusiness._id} />
+          <Product businessId={selectedBusiness._id} onProductsChange={onProductsChange} />
+          <BusinessCatalog businessId={selectedBusiness._id} products={products} onProductsChange={onProductsChange} />
         </div>
       </div>
     );

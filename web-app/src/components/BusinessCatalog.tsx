@@ -14,40 +14,16 @@ interface ProductItem {
 
 interface BusinessCatalogProps {
   businessId: string;
+  products: ProductItem[];
+  onProductsChange: () => void;
 }
 
-const BusinessCatalog = ({ businessId }: BusinessCatalogProps) => {
-  const [products, setProducts] = useState<ProductItem[]>([]);
+const BusinessCatalog = ({ businessId, products, onProductsChange }: BusinessCatalogProps) => {
   const [selectedItem, setSelectedItem] = useState<ProductItem | null>(null);
   const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`/api/products/${businessId}`, {
-          headers: {
-            'x-auth-token': token || '',
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
-        }
-        const data = await response.json();
-        setProducts(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (businessId) {
-      fetchProducts();
-    }
-  }, [businessId]);
 
   const openItemView = (item: ProductItem) => {
     setSelectedItem(item);
@@ -74,8 +50,8 @@ const BusinessCatalog = ({ businessId }: BusinessCatalogProps) => {
         if (!res.ok) {
           throw new Error('Failed to delete product');
         }
-        setProducts(products.filter(p => p._id !== productId));
         setSelectedItem(null);
+        onProductsChange();
       } catch (error) {
         console.error('Error deleting product:', error);
       }
@@ -128,8 +104,8 @@ const BusinessCatalog = ({ businessId }: BusinessCatalogProps) => {
       });
       if (!res.ok) throw new Error('Failed to update product');
       const updatedProduct = await res.json();
-      setProducts(products.map(p => p._id === product._id ? updatedProduct : p));
       setEditingProduct(null);
+      onProductsChange();
     } catch (error) {
       console.error('Error updating product:', error);
     }
