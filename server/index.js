@@ -23,6 +23,16 @@ const roomRoutes = require('./routes/rooms');
 app.use('/api/rooms', roomRoutes);
 const fileRoutes = require('./routes/files');
 app.use('/api/files', fileRoutes);
+const businessRoutes = require('./routes/business');
+app.use('/api/business', businessRoutes);
+const productRoutes = require('./routes/products');
+app.use('/api/products', productRoutes);
+
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./api-documentation.yaml');
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // --- Database Schema ---
 const MessageSchema = new mongoose.Schema({
