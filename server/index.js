@@ -27,6 +27,8 @@ const businessRoutes = require('./routes/business');
 app.use('/api/business', businessRoutes);
 const productRoutes = require('./routes/products');
 app.use('/api/products', productRoutes);
+const searchRoutes = require('./routes/search');
+app.use('/api/search', searchRoutes);
 
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
