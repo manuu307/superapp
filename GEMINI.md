@@ -45,8 +45,8 @@ The system achieves horizontal scaling (running multiple Node.js instances) usin
     - `server/middleware/auth.js`: JWT authentication middleware for protecting routes.
 
 ## 8. Frontend
-- **Framework:** React
-- **Entrypoint:** `client/src/index.jsx` renders the `App` component from `client/src/App.jsx`.
+- **Framework:** NextJs
+- **Entrypoint:** `web-front/src/app/page.tsx`.
 - **Main Component (`App.jsx`):**
     - Handles the authentication flow, showing login/register forms or the main chat application.
     - Manages the Socket.io connection.
