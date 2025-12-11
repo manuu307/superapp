@@ -1,24 +1,72 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useBusiness } from '../context/BusinessContext';
-import { Business } from '../types/Business';
-import { Product } from '../types/Product';
 
-const BusinessPublicProfile = () => {
-  const { business, products, loading, error } = useBusiness();
+interface Product {
+  _id: string;
+  name: string;
+  short_description: string;
+  description: string;
+  picture: string;
+  price_before: number;
+  price_after: number;
+  categories: string[];
+}
+
+interface Business {
+  _id: string;
+  name: string;
+  picture?: string;
+  bannerMedia?: string;
+  aboutUs?: string;
+  deliveryAvailable?: boolean;
+  location?: {
+    address: string;
+    latitude: number;
+    longitude: number;
+  };
+  openDaysHours?: {
+    dayOfWeek: string;
+    openTime: string;
+    closeTime: string;
+  }[];
+}
+
+const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
+  const [business, setBusiness] = useState<Business | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (products.length > 0) {
-      const allCategories = products.reduce((acc: string[], product: Product) => {
-        return [...acc, ...product.categories];
-      }, []);
-      const uniqueCategories = [...new Set(allCategories)];
-      setCategories(uniqueCategories);
+    const fetchBusinessData = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/public/stores/${businessId}`);
+        if (!res.ok) {
+          throw new Error('Failed to fetch business data');
+        }
+        const { business, products }: { business: Business; products: Product[] } = await res.json();
+        setBusiness(business);
+        setProducts(products);
+
+        const allCategories = products.reduce((acc: string[], product: Product) => {
+          return [...acc, ...product.categories];
+        }, []);
+        const uniqueCategories = [...new Set(allCategories)];
+        setCategories(uniqueCategories);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (businessId) {
+      fetchBusinessData();
     }
-  }, [products]);
+  }, [businessId]);
 
   const filteredProducts = activeCategory
     ? products.filter(product => product.categories.includes(activeCategory))

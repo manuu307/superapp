@@ -1,57 +1,64 @@
 "use client";
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Business } from '../types/Business';
-import { Product } from '../types/Product';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { useParams } from 'next/navigation';
 
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  // Add other product fields as needed
+}
+
+interface BusinessData {
+  _id: string;
+  name: string;
+  products: Product[];
+  // Add other business fields as needed
+}
 
 interface BusinessContextType {
-  business: Business | null;
-  products: Product[];
+  businessData: BusinessData | null;
   loading: boolean;
   error: string | null;
+  fetchBusinessData: () => Promise<void>;
+}
+
+interface BusinessProviderProps {
+  children: React.ReactNode;
+  businessId: string | null;
 }
 
 const BusinessContext = createContext<BusinessContextType | undefined>(undefined);
 
-interface BusinessProviderProps {
-  children: ReactNode;
-  businessId: string;
-}
-
-export const BusinessProvider = ({ children, businessId }: BusinessProviderProps) => {
-  const [business, setBusiness] = useState<Business | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+const BusinessProvider: React.FC<BusinessProviderProps> = ({ children, businessId }) => {
+  const [businessData, setBusinessData] = useState<BusinessData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (businessId) {
-      const fetchBusiness = async () => {
-        setLoading(true);
-        try {
-          const res = await fetch(`/api/v1/public/stores/${businessId}`);
-          if (!res.ok) {
-            throw new Error('Business not found');
-          }
-          const data = await res.json();
-          setBusiness(data.business);
-          setProducts(data.products);
-        } catch (err) {
-          if (err instanceof Error) {
-            setError(err.message);
-          } else {
-            setError('An unknown error occurred');
-          }
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchBusiness();
+  const fetchBusinessData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/public/stores/${businessId}`);
+      if (!response.ok) {
+        throw new Error(`Error fetching business data: ${response.statusText}`);
+      }
+      const data = await response.json();
+      setBusinessData(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-  }, [businessId]);
+  };
+
+  useEffect(() => {
+    fetchBusinessData();
+  }, [businessId]); // Re-fetch if token changes
 
   return (
-    <BusinessContext.Provider value={{ business, products, loading, error }}>
+    <BusinessContext.Provider value={{ businessData, loading, error, fetchBusinessData }}>
       {children}
     </BusinessContext.Provider>
   );
@@ -64,3 +71,5 @@ export const useBusiness = () => {
   }
   return context;
 };
+
+export { BusinessContext, BusinessProvider };

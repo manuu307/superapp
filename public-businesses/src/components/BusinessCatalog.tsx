@@ -1,29 +1,44 @@
+"use client";
 import React, { useState, useEffect } from 'react';
-import { Product } from '../types/Product';
 
-interface BusinessCatalogProps {
-  products: Product[];
+interface ProductItem {
+  _id: string;
+  name: string;
+  short_description: string;
+  description: string;
+  picture: string;
+  price_before: number;
+  price_after: number;
+  business: string;
+  categories: string[];
 }
 
-const BusinessCatalog = ({ products }: BusinessCatalogProps) => {
-  const [selectedItem, setSelectedItem] = useState<Product | null>(null);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+interface BusinessCatalogProps {
+  businessId: string;
+  products: ProductItem[];
+  onProductsChange: () => void;
+}
+
+const BusinessCatalog = ({ businessId, products, onProductsChange }: BusinessCatalogProps) => {
+  const [selectedItem, setSelectedItem] = useState<ProductItem | null>(null);
+  const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const openItemView = (item: Product) => {
+
+  const openItemView = (item: ProductItem) => {
     setSelectedItem(item);
   };
-  
+
   const closeItemView = () => {
     setSelectedItem(null);
   };
 
-  const handleEdit = (product: Product) => {
+  const handleEdit = (product: ProductItem) => {
     setSelectedItem(null);
     setEditingProduct(product);
   };
-  
+
   const handleDelete = async (productId: string) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       const token = localStorage.getItem('token');
@@ -37,14 +52,14 @@ const BusinessCatalog = ({ products }: BusinessCatalogProps) => {
           throw new Error('Failed to delete product');
         }
         setSelectedItem(null);
-        // onProductsChange();
+        onProductsChange();
       } catch (error) {
         console.error('Error deleting product:', error);
       }
     }
   };
-  
-  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>, product: Product) => {
+
+  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>, product: ProductItem) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -100,12 +115,11 @@ const BusinessCatalog = ({ products }: BusinessCatalogProps) => {
       if (!res.ok) throw new Error('Failed to update product');
       const updatedProduct = await res.json();
       setEditingProduct(null);
-      // onProductsChange();
+      onProductsChange();
     } catch (error) {
       console.error('Error updating product:', error);
     }
   };
-
 
   if (loading) {
     return <div>Loading catalog...</div>;
