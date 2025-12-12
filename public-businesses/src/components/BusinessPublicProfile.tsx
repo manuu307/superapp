@@ -1,6 +1,8 @@
 'use client';
 
+import { useBusiness } from '@/context/BusinessContext';
 import React, { useState, useEffect } from 'react';
+
 
 interface Product {
   _id: string;
@@ -13,64 +15,15 @@ interface Product {
   categories: string[];
 }
 
-interface Business {
-  _id: string;
-  name: string;
-  picture?: string;
-  bannerMedia?: string;
-  aboutUs?: string;
-  deliveryAvailable?: boolean;
-  location?: {
-    address: string;
-    latitude: number;
-    longitude: number;
-  };
-  openDaysHours?: {
-    dayOfWeek: string;
-    openTime: string;
-    closeTime: string;
-  }[];
-}
-
-const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
-  const [business, setBusiness] = useState<Business | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
+const BusinessPublicProfile = (props:any) => {
+  const {businessData, loading} = useBusiness()
   const [categories, setCategories] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchBusinessData = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/public/stores/${businessId}`);
-        if (!res.ok) {
-          throw new Error('Failed to fetch business data');
-        }
-        const { business, products }: { business: Business; products: Product[] } = await res.json();
-        setBusiness(business);
-        setProducts(products);
-
-        const allCategories = products.reduce((acc: string[], product: Product) => {
-          return [...acc, ...product.categories];
-        }, []);
-        const uniqueCategories = [...new Set(allCategories)];
-        setCategories(uniqueCategories);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (businessId) {
-      fetchBusinessData();
-    }
-  }, [businessId]);
-
   const filteredProducts = activeCategory
-    ? products.filter(product => product.categories.includes(activeCategory))
-    : products;
+    ? businessData?.products.filter(product => product.categories.includes(activeCategory))
+    : businessData?.products;
 
   if (loading) {
     return <div>Loading...</div>;
@@ -80,7 +33,7 @@ const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
     return <div>Error: {error}</div>;
   }
 
-  if (!business) {
+  if (!businessData) {
     return <div>Business not found</div>;
   }
 
@@ -88,19 +41,19 @@ const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
     <div className="p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
       <div className="relative">
         <img
-          src={business.bannerMedia || 'https://via.placeholder.com/1200x400'}
-          alt={`${business.name} banner`}
+          src={businessData.bannerMedia || 'https://via.placeholder.com/1200x400'}
+          alt={`${businessData.name} banner`}
           className="w-full h-64 object-cover rounded-t-lg"
         />
         <img
-          src={business.picture || 'https://via.placeholder.com/150'}
-          alt={business.name}
+          src={businessData.picture || 'https://via.placeholder.com/150'}
+          alt={businessData.name}
           className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-32 h-32 rounded-full border-4 border-white dark:border-gray-800"
         />
       </div>
       <div className="pt-16 text-center">
-        <h1 className="text-4xl font-bold">{business.name}</h1>
-        <p className="text-gray-600 dark:text-gray-400">{business.aboutUs}</p>
+        <h1 className="text-4xl font-bold">{businessData.name}</h1>
+        <p className="text-gray-600 dark:text-gray-400">{businessData.aboutUs}</p>
       </div>
 
       <div className="flex justify-center space-x-2 my-4">
@@ -122,7 +75,7 @@ const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredProducts.map(product => (
+        {filteredProducts?.map(product => (
           <div key={product._id} className="bg-gray-100 dark:bg-gray-900 p-4 rounded-lg">
             <img src={product.picture} alt={product.name} className="w-full h-48 object-cover rounded-md mb-4" />
             <h3 className="text-xl font-bold">{product.name}</h3>

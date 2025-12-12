@@ -1,24 +1,39 @@
 "use client";
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { useParams } from 'next/navigation';
 
 interface Product {
   _id: string;
   name: string;
+  short_description: string;
   description: string;
-  price: number;
-  // Add other product fields as needed
+  picture: string;
+  price_before: number;
+  price_after: number;
+  categories: string[];
 }
 
-interface BusinessData {
+interface Business {
   _id: string;
   name: string;
+  picture?: string;
+  bannerMedia?: string;
+  aboutUs?: string;
+  deliveryAvailable?: boolean;
   products: Product[];
-  // Add other business fields as needed
+  location?: {
+    address: string;
+    latitude: number;
+    longitude: number;
+  };
+  openDaysHours?: {
+    dayOfWeek: string;
+    openTime: string;
+    closeTime: string;
+  }[];
 }
 
 interface BusinessContextType {
-  businessData: BusinessData | null;
+  businessData: Business | null;
   loading: boolean;
   error: string | null;
   fetchBusinessData: () => Promise<void>;
@@ -32,7 +47,7 @@ interface BusinessProviderProps {
 const BusinessContext = createContext<BusinessContextType | undefined>(undefined);
 
 const BusinessProvider: React.FC<BusinessProviderProps> = ({ children, businessId }) => {
-  const [businessData, setBusinessData] = useState<BusinessData | null>(null);
+  const [businessData, setBusinessData] = useState<Business | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,7 +70,7 @@ const BusinessProvider: React.FC<BusinessProviderProps> = ({ children, businessI
 
   useEffect(() => {
     fetchBusinessData();
-  }, [businessId]); // Re-fetch if token changes
+  }, []); // Re-fetch if token changes
 
   return (
     <BusinessContext.Provider value={{ businessData, loading, error, fetchBusinessData }}>

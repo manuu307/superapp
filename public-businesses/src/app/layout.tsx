@@ -1,9 +1,9 @@
 import Navbar from "@/components/Navbar";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Providers } from './providers';
 import { headers } from 'next/headers'
 import { BusinessProvider } from "@/context/BusinessContext";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,12 +34,10 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
           <BusinessProvider businessId={businessId as string}>
             <Navbar />
             {children}
           </BusinessProvider>
-        </Providers>
       </body>
     </html>
   );
