@@ -3,7 +3,7 @@ import React, { useState, useContext } from 'react';
 import Link from 'next/link';
 import { BsChatDots, BsPerson, BsBriefcase } from 'react-icons/bs';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
-import { BusinessContext } from '../context/BusinessContext';
+import { useBusiness } from '@/context/BusinessContext';
 
 interface User {
   username: string;
@@ -12,7 +12,8 @@ interface User {
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  // const { token, loading } = useContext(BusinessContext);
+  const { businessData } = useBusiness();
+
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -23,13 +24,13 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link href="/store" className="flex-shrink-0 text-white font-bold text-xl">
-              Store
+            <Link href="/" className="flex-shrink-0 text-white font-bold text-xl">
+              {businessData?.name}
             </Link>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <Link href="/store" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
-                  <BsChatDots className="mr-2" /> 
+                <Link href="/" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+                  <BsChatDots className="mr-2" /> Store
                 </Link>
                 <Link href="/about" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
                   <BsPerson className="mr-2" /> About Us
@@ -52,7 +53,7 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link href="/store" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+            <Link href="/" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
               <BsChatDots className="mr-2" /> Store
             </Link>
             <Link href="/about" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">

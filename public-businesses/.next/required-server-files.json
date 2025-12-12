@@ -45,7 +45,11 @@
       "path": "/_next/image",
       "loader": "default",
       "loaderFile": "",
-      "domains": [],
+      "domains": [
+        "192.168.1.10",
+        "via.placeholder.com",
+        "localhost"
+      ],
       "disableStaticImages": false,
       "minimumCacheTTL": 14400,
       "formats": [
@@ -99,7 +103,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "/home/mbarreiro/Development/superapp/web-app",
+    "outputFileTracingRoot": "/home/darkerdandark/Development/superapp/public-businesses",
     "cacheComponents": false,
     "cacheLife": {
       "default": {
@@ -289,11 +293,11 @@
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.ts",
     "turbopack": {
-      "root": "/home/mbarreiro/Development/superapp/web-app"
+      "root": "/home/darkerdandark/Development/superapp/public-businesses"
     },
     "distDirRoot": ".next"
   },
-  "appDir": "/home/mbarreiro/Development/superapp/web-app",
+  "appDir": "/home/darkerdandark/Development/superapp/public-businesses",
   "relativeAppDir": "",
   "files": [
     ".next/routes-manifest.json",

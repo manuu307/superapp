@@ -1,0 +1,3 @@
+module.exports=[3691,a=>{"use strict";var b=a.i(87924),c=a.i(42018);a.s(["default",0,()=>{let{businessData:a,loading:d,error:e}=(0,c.useBusiness)();return d?(0,b.jsx)("div",{children:"Loading..."}):e?(0,b.jsxs)("div",{children:["Error: ",e]}):a?(0,b.jsxs)("div",{className:"container mx-auto p-4",children:[(0,b.jsx)("h1",{className:"text-3xl font-bold",children:a.name}),a.bannerMedia&&(0,b.jsx)("img",{src:a.bannerMedia,alt:`${a.name} banner`,className:"w-full h-64 object-cover my-4"}),a.aboutUs&&(0,b.jsx)("p",{children:a.aboutUs})]}):(0,b.jsx)("div",{children:"Business not found"})}])}];
+
+//# sourceMappingURL=src_app_about_page_tsx_7012f683._.js.map

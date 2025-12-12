@@ -38,7 +38,7 @@ services:
     build: ./public-businesses
     container_name: public_business_pages
     environment:
-      - PORT=3000
+      - PORT=3001
       - NODE_ENV=production
     networks:
       - chat-net

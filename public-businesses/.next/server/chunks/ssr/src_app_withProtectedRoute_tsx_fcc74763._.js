@@ -1,3 +1,0 @@
-module.exports=[80148,a=>{"use strict";var b=a.i(87924),c=a.i(72131),d=a.i(50944),e=a.i(56025);let f=({children:a})=>{let{token:f,loading:g}=(0,c.useContext)(e.AuthContext),h=(0,d.useRouter)();return(console.log("ProtectedRoute - loading:",g,"token:",f),g)?(0,b.jsx)("div",{children:"Loading..."}):f?(0,b.jsx)(b.Fragment,{children:a}):(h.push("/login"),null)};function g(a){return function(c){return(0,b.jsx)(f,{children:(0,b.jsx)(a,{...c})})}}a.s(["withProtectedRoute",()=>g],80148)}];
-
-//# sourceMappingURL=src_app_withProtectedRoute_tsx_fcc74763._.js.map

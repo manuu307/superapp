@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
 
 interface Product {
   _id: string;
@@ -36,7 +36,12 @@ interface BusinessContextType {
   businessData: Business | null;
   loading: boolean;
   error: string | null;
+  categories: string[];
+  activeCategory: string | null;
+  filteredProducts: Product[] | undefined;
   fetchBusinessData: () => Promise<void>;
+  setActiveCategory: (category: string | null) => void;
+  resetCategoryFilter: () => void;
 }
 
 interface BusinessProviderProps {
@@ -50,8 +55,16 @@ const BusinessProvider: React.FC<BusinessProviderProps> = ({ children, businessI
   const [businessData, setBusinessData] = useState<Business | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const fetchBusinessData = async () => {
+    if (!businessId) {
+      setError('Business ID is required');
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -59,8 +72,19 @@ const BusinessProvider: React.FC<BusinessProviderProps> = ({ children, businessI
       if (!response.ok) {
         throw new Error(`Error fetching business data: ${response.statusText}`);
       }
-      const data = await response.json();
+      const data: Business = await response.json();
       setBusinessData(data);
+
+      // Extract unique categories from products
+      if (data.products && data.products.length > 0) {
+        const allCategories = data.products.reduce((acc: string[], product: Product) => {
+          return [...acc, ...product.categories];
+        }, []);
+        const uniqueCategories = [...new Set(allCategories)];
+        setCategories(uniqueCategories);
+      } else {
+        setCategories([]);
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -68,12 +92,46 @@ const BusinessProvider: React.FC<BusinessProviderProps> = ({ children, businessI
     }
   };
 
+  // Compute filtered products based on active category
+  const filteredProducts = useMemo(() => {
+    if (!businessData?.products) return undefined;
+    
+    if (activeCategory) {
+      return businessData.products.filter(product => 
+        product.categories.includes(activeCategory)
+      );
+    }
+    
+    return businessData.products;
+  }, [businessData, activeCategory]);
+
+  const resetCategoryFilter = () => {
+    setActiveCategory(null);
+  };
+
   useEffect(() => {
-    fetchBusinessData();
-  }, []); // Re-fetch if token changes
+    if (businessId) {
+      fetchBusinessData();
+    } else {
+      setLoading(false);
+      setError('No business ID provided');
+    }
+  }, [businessId]); // Re-fetch when businessId changes
+
+  const value: BusinessContextType = {
+    businessData,
+    loading,
+    error,
+    categories,
+    activeCategory,
+    filteredProducts,
+    fetchBusinessData,
+    setActiveCategory,
+    resetCategoryFilter
+  };
 
   return (
-    <BusinessContext.Provider value={{ businessData, loading, error, fetchBusinessData }}>
+    <BusinessContext.Provider value={value}>
       {children}
     </BusinessContext.Provider>
   );

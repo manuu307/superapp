@@ -23,7 +23,11 @@
     "path": "/_next/image",
     "loader": "default",
     "loaderFile": "",
-    "domains": [],
+    "domains": [
+      "192.168.1.10",
+      "via.placeholder.com",
+      "localhost"
+    ],
     "disableStaticImages": false,
     "minimumCacheTTL": 14400,
     "formats": [

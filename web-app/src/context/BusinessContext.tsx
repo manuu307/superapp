@@ -1,8 +1,10 @@
 "use client";
-import React, { createContext } from 'react';
-
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { useAuth } from './AuthContext'; // Assuming AuthContext provides the token
+import { AuthContext } from '../context/AuthContext';
+
+interface AuthContextType {
+  token: string | null;
+}
 
 interface Product {
   _id: string;
@@ -33,8 +35,8 @@ interface BusinessProviderProps {
 const BusinessContext = createContext<BusinessContextType | undefined>(undefined);
 
 const BusinessProvider: React.FC<BusinessProviderProps> = ({ children }) => {
-  const { token } = useAuth(); // Get token from AuthContext
-  const [businessData, setBusinessData] = useState<BusinessData | null>(null);
+ const { token, } = useContext(AuthContext) as AuthContextType;  
+ const [businessData, setBusinessData] = useState<BusinessData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

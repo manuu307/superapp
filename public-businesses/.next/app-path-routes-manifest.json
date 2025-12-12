@@ -1,10 +1,8 @@
 {
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
-  "/business/page": "/business",
+  "/about/page": "/about",
+  "/contact/page": "/contact",
   "/favicon.ico/route": "/favicon.ico",
-  "/login/page": "/login",
-  "/page": "/",
-  "/profile/page": "/profile",
-  "/register/page": "/register"
+  "/page": "/"
 }
