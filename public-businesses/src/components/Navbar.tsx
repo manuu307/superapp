@@ -25,13 +25,24 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
+  if (!businessData || !businessData.business) {
+    return (
+      <div className="container mx-auto p-4">
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+          Business not found
+        </div>
+      </div>
+    );
+  }
+
+  const { business } = businessData;
   return (
     <nav className="bg-gray-800 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 text-white font-bold text-xl">
-              {businessData?.name}
+              {business.name}
             </Link>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">

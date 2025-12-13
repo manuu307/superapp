@@ -50,6 +50,7 @@ const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
         const { business, products }: { business: Business; products: Product[] } = await res.json();
         setBusiness(business);
         setProducts(products);
+        console.log(business)
 
         const allCategories = products.reduce((acc: string[], product: Product) => {
           return [...acc, ...product.categories];

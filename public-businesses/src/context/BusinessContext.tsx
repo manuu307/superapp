@@ -12,6 +12,11 @@ interface Product {
   categories: string[];
 }
 
+interface BusinessData {
+  business: Business | null;
+  products: Product[];
+}
+
 interface Business {
   _id: string;
   name: string;
@@ -19,7 +24,6 @@ interface Business {
   bannerMedia?: string;
   aboutUs?: string;
   deliveryAvailable?: boolean;
-  products: Product[];
   location?: {
     address: string;
     latitude: number;
@@ -33,7 +37,7 @@ interface Business {
 }
 
 interface BusinessContextType {
-  businessData: Business | null;
+  businessData: BusinessData | null;
   loading: boolean;
   error: string | null;
   categories: string[];
@@ -52,7 +56,7 @@ interface BusinessProviderProps {
 const BusinessContext = createContext<BusinessContextType | undefined>(undefined);
 
 const BusinessProvider: React.FC<BusinessProviderProps> = ({ children, businessId }) => {
-  const [businessData, setBusinessData] = useState<Business | null>(null);
+  const [businessData, setBusinessData] = useState<BusinessData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
@@ -72,8 +76,10 @@ const BusinessProvider: React.FC<BusinessProviderProps> = ({ children, businessI
       if (!response.ok) {
         throw new Error(`Error fetching business data: ${response.statusText}`);
       }
-      const data: Business = await response.json();
+      const data: BusinessData = await response.json();
       setBusinessData(data);
+      console.log(data)
+
 
       // Extract unique categories from products
       if (data.products && data.products.length > 0) {
