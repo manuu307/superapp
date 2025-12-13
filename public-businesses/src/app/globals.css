@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 @plugin "daisyui" {
-  themes: ["dark"],
+  themes: ["light", "dark"],
 }

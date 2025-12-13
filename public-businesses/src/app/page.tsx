@@ -1,11 +1,14 @@
-'use client';
-
+import { headers } from 'next/headers'
 import BusinessPublicProfile from '@/components/BusinessPublicProfile';
 
-const BusinessPublicProfilePage = () => {
+const BusinessPublicProfilePage = async () => {
+    
+    const headersList = await headers()
+    const businessId = headersList.get('x-business')
+    
   return (
     <div>
-      <BusinessPublicProfile />
+      <BusinessPublicProfile businessId={businessId as string}/>
     </div>
   );
 };

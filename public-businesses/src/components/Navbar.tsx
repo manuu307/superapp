@@ -4,13 +4,19 @@ import Link from 'next/link';
 import { BsChatDots, BsPerson, BsBriefcase } from 'react-icons/bs';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import { useBusiness } from '@/context/BusinessContext';
+import { ThemeContext } from '../context/ThemeContext';
 
 interface User {
   username: string;
   email?: string; // Assuming email might be part of the user object
 }
+interface ThemeContextType {
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
+}
 
 const Navbar = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext) as ThemeContextType;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { businessData } = useBusiness();
 
@@ -40,6 +46,11 @@ const Navbar = () => {
                 </Link>
               </div>
             </div>
+          </div>
+          <div className="hidden md:flex items-center">
+            <button onClick={toggleTheme} className="px-4 py-2 mr-4 font-bold text-white bg-gray-500 rounded-md hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-900">
+              Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
+            </button>
           </div>
           <div className="-mr-2 flex md:hidden">
             <button onClick={toggleMenu} className="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
