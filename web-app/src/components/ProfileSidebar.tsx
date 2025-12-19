@@ -80,7 +80,7 @@ const ProfileSidebar = () => {
     uploadFormData.append('file', profilePictureFile);
 
     try {
-      const uploadRes = await fetch('/api/files/upload', {
+      const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/files/upload`, {
         method: 'POST',
         headers: {
           'x-auth-token': token
@@ -94,7 +94,7 @@ const ProfileSidebar = () => {
 
       const { url } = await uploadRes.json();
 
-      const updateRes = await fetch('/api/users/profile-picture', {
+      const updateRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/users/profile-picture`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -109,9 +109,12 @@ const ProfileSidebar = () => {
 
       refetchUser();
       setProfilePictureFile(null);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || 'Failed to upload profile picture.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to upload profile picture.');
+      }
     }
   };
 
@@ -126,7 +129,7 @@ const ProfileSidebar = () => {
     }
 
     try {
-      const res = await fetch('/api/users/profile', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -142,9 +145,12 @@ const ProfileSidebar = () => {
 
       refetchUser();
       setIsEditing(false);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || 'Failed to update profile.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to update profile.');
+      }
     }
   };
 
@@ -158,6 +164,8 @@ const ProfileSidebar = () => {
         <img
           src={user.profilePicture || 'https://via.placeholder.com/150'}
           alt="Profile"
+          width={128}
+          height={128}
           className="object-cover w-32 h-32 mx-auto rounded-full cursor-pointer"
           onClick={handleUploadClick}
         />

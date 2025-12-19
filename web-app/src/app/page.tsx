@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext } from 'react';
-import { SocialContext, SocialProvider } from '../context/SocialContext';
+import { SocialContext, SocialProvider, type SocialContextType } from '../context/SocialContext';
 import CreateRoom from '../components/CreateRoom';
 import { AuthContext } from '../context/AuthContext';
 
@@ -15,19 +15,6 @@ interface AuthContextType {
   token: string | null;
 }
 
-interface SocialContextType {
-  room: string;
-  setRoom: (room: string) => void;
-  rooms: string[];
-  message: string;
-  setMessage: (message: string) => void;
-  chat: Message[];
-  sendMessage: (e: React.FormEvent) => void;
-  showCreateRoom: boolean;
-  setShowCreateRoom: (show: boolean) => void;
-  handleRoomCreated: (roomName: string) => void;
-  handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
 
 const Chat = () => {
   const {
@@ -72,7 +59,7 @@ const Chat = () => {
                 <div className="text-sm font-bold">{msg.sender}</div>
                 <div className="text-lg">
                   {msg.text.startsWith('http://') && (msg.text.endsWith('.jpg') || msg.text.endsWith('.png') || msg.text.endsWith('.gif')) ? (
-                    <img src={msg.text} alt="Uploaded content" className="max-w-xs rounded-md" />
+                    <img src={msg.text} alt="Uploaded content" width={320} height={213} className="max-w-xs rounded-md" />
                   ) : (
                     msg.text
                   )}

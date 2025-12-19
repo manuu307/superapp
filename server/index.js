@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
+const cors = require('cors');
 const { Server } = require('socket.io');
 const { createClient } = require('redis');
 const { createAdapter } = require('@socket.io/redis-adapter');
@@ -13,20 +14,22 @@ const server = http.createServer(app);
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-
+app.use(cors({ origin: '*' })); 
 app.get('/', (req, res) => res.send('Server is running'));
 const userRoutes = require('./routes/users');
-app.use('/api/users', userRoutes);
+app.use('/api/v1/users', userRoutes);
 const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
+app.use('/api/v1/auth', authRoutes);
 const roomRoutes = require('./routes/rooms');
-app.use('/api/rooms', roomRoutes);
+app.use('/api/v1/rooms', roomRoutes);
 const fileRoutes = require('./routes/files');
-app.use('/api/files', fileRoutes);
+app.use('/api/v1/files', fileRoutes);
 const businessRoutes = require('./routes/business');
-app.use('/api/business', businessRoutes);
+app.use('/api/v1/business', businessRoutes);
 const productRoutes = require('./routes/products');
-app.use('/api/products', productRoutes);
+app.use('/api/v1/products', productRoutes);
+const publicRoutes = require('./routes/public');
+app.use('/api/v1/public', publicRoutes);
 
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');

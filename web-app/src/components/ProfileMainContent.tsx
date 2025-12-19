@@ -8,6 +8,18 @@ interface Contact {
   username: string;
 }
 
+interface ProductItem {
+  _id: string;
+  name: string;
+  short_description: string;
+  description: string;
+  picture: string;
+  price_before: number;
+  price_after: number;
+  business: string;
+  categories: string[];
+}
+
 interface User {
   _id: string;
   username: string;
@@ -20,7 +32,7 @@ interface User {
   website?: string;
   profilePicture?: string;
   rooms?: string[];
-  catalog?: any[];
+  catalog?: ProductItem[];
   contacts?: Contact[];
 }
 
@@ -42,37 +54,49 @@ const ProfileMainContent = () => {
     e.preventDefault();
     if (!searchQuery) return;
     try {
-      const response = await fetch(`/api/users/search?query=${searchQuery}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/users/search?query=${searchQuery}`, {
         headers: { 'x-auth-token': token || '' }
       });
       const data: Contact[] = await response.json();
       setSearchResults(data);
-    } catch (err) {
-      console.error(err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error('An unknown error occurred during search');
+      }
     }
   };
 
   const addContact = async (userId: string) => {
     try {
-      await fetch(`/api/users/contacts/add/${userId}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/users/contacts/add/${userId}`, {
         method: 'POST',
         headers: { 'x-auth-token': token || '' }
       });
       refetchUser();
-    } catch (err) {
-      console.error(err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error('An unknown error occurred when adding a contact');
+      }
     }
   };
 
   const removeContact = async (userId: string) => {
     try {
-      await fetch(`/api/users/contacts/remove/${userId}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/users/contacts/remove/${userId}`, {
         method: 'DELETE',
         headers: { 'x-auth-token': token || '' }
       });
       refetchUser();
-    } catch (err) {
-      console.error(err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error('An unknown error occurred when removing a contact');
+      }
     }
   };
 

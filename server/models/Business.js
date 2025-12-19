@@ -23,6 +23,33 @@ const BusinessSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  bannerMedia: {
+    type: String,
+    default: ''
+  },
+  aboutUs: {
+    type: String,
+    default: ''
+  },
+  deliveryAvailable: {
+    type: Boolean,
+    default: false
+  },
+  location: {
+    address: String,
+    latitude: Number,
+    longitude: Number
+  },
+  subdomain: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  openDaysHours: [{
+    dayOfWeek: String,
+    openTime: String,
+    closeTime: String
+  }],
   createdAt: {
     type: Date,
     default: Date.now

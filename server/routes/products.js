@@ -9,7 +9,7 @@ const auth = require('../middleware/auth');
 // @access  Private
 router.post('/', auth, async (req, res) => {
   try {
-    const { name, short_description, description, picture, price_before, price_after, businessId } = req.body;
+    const { name, short_description, description, picture, price_before, price_after, businessId, categories } = req.body;
 
     const business = await Business.findById(businessId);
 
@@ -28,7 +28,8 @@ router.post('/', auth, async (req, res) => {
       picture,
       price_before,
       price_after,
-      business: businessId
+      business: businessId,
+      categories
     });
 
     const product = await newProduct.save();
@@ -61,7 +62,7 @@ router.get('/:businessId', async (req, res) => {
 // @access  Private
 router.put('/:id', auth, async (req, res) => {
   try {
-    const { name, short_description, description, picture, price_before, price_after } = req.body;
+    const { name, short_description, description, picture, price_before, price_after, categories } = req.body;
     const product = await Product.findById(req.params.id);
 
     if (!product) {
@@ -80,6 +81,7 @@ router.put('/:id', auth, async (req, res) => {
     product.picture = picture || product.picture;
     product.price_before = price_before || product.price_before;
     product.price_after = price_after || product.price_after;
+    product.categories = categories || product.categories;
 
     await product.save();
     res.json(product);

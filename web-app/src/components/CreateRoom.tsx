@@ -7,9 +7,19 @@ interface User {
   // Add other user properties if they are used in this component
 }
 
+interface Room {
+  _id: string;
+  name: string;
+  description?: string;
+  isPrivate: boolean;
+  tags: string[];
+  users: User[];
+  admins: User[];
+}
+
 interface CreateRoomProps {
   token: string | null;
-  onRoomCreated: (room: any) => void; // Consider defining a more specific Room interface
+  onRoomCreated: (room: Room) => void;
 }
 
 const CreateRoom: React.FC<CreateRoomProps> = ({ token, onRoomCreated }) => {
@@ -25,7 +35,7 @@ const CreateRoom: React.FC<CreateRoomProps> = ({ token, onRoomCreated }) => {
   const fetchUsers = useCallback(async () => {
     if (!token) return;
     try {
-      const response = await fetch('/api/users', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/users`, {
         headers: {
           'x-auth-token': token,
         },
@@ -35,9 +45,13 @@ const CreateRoom: React.FC<CreateRoomProps> = ({ token, onRoomCreated }) => {
       }
       const data: User[] = await response.json();
       setUsers(data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching users:', error);
-      setError(error.message || 'Failed to fetch users.');
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('Failed to fetch users.');
+      }
     }
   }, [token]);
 
@@ -71,7 +85,7 @@ const CreateRoom: React.FC<CreateRoomProps> = ({ token, onRoomCreated }) => {
     }
 
     try {
-      const response = await fetch('/api/rooms', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/rooms`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,15 +107,19 @@ const CreateRoom: React.FC<CreateRoomProps> = ({ token, onRoomCreated }) => {
         throw new Error(data.message || 'Failed to create room');
       }
 
-      onRoomCreated(data.name);
+      onRoomCreated(data);
       setRoomName('');
       setDescription('');
       setIsPrivate(false);
       setTags('');
       setSelectedUsers([]);
       setAdmins([]);
-    } catch (err: any) {
-      setError(err.message || 'An error occurred while creating the room.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An error occurred while creating the room.');
+      }
     }
   };
 

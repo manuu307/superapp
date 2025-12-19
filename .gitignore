@@ -1,11 +1,17 @@
 # Dependencies
 /node_modules
-/client/node_modules
+/web-app/node_modules
+/web-app/.next
 /server/node_modules
-
+/public-businesses/node_modules
+/public/businesses/.next
+public-businesses/.next/*
+*/.next/*
 # Build artifacts
-/client/build
-/client/dist
+/web-app/build
+/web-app/dist
+/backup
+/backup/*
 
 # Environment variables
 .env

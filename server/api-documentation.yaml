@@ -18,6 +18,8 @@ tags:
     description: Room management endpoints
   - name: Users
     description: User management endpoints
+  - name: Public
+    description: Public endpoints
 paths:
   /auth/register:
     post:
@@ -91,6 +93,20 @@ paths:
                   type: string
                 picture:
                   type: string
+                bannerMedia:
+                  type: array
+                  items:
+                    type: string
+                aboutUs:
+                  type: string
+                deliveryAvailable:
+                  type: boolean
+                location:
+                  type: string
+                subdomain:
+                  type: string
+                openDaysHours:
+                  type: object
       responses:
         "200":
           description: Business created successfully
@@ -127,6 +143,20 @@ paths:
                   type: string
                 picture:
                   type: string
+                bannerMedia:
+                  type: array
+                  items:
+                    type: string
+                aboutUs:
+                  type: string
+                deliveryAvailable:
+                  type: boolean
+                location:
+                  type: string
+                subdomain:
+                  type: string
+                openDaysHours:
+                  type: object
       responses:
         "200":
           description: Business updated successfully
@@ -474,6 +504,20 @@ paths:
       responses:
         "200":
           description: Catalog item deleted successfully
+  /v1/public/stores/{businessId}:
+    get:
+      tags:
+        - Public
+      summary: Get public business data
+      parameters:
+        - in: path
+          name: businessId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Business and product data
 components:
   securitySchemes:
     bearerAuth:

@@ -1,5 +1,6 @@
 "use client";
 import React, { useContext, useState } from 'react';
+import Image from 'next/image';
 import { AuthContext } from '../context/AuthContext';
 
 interface CatalogItem {
@@ -43,7 +44,7 @@ const UsersCatalog = () => {
         {user.catalog.map((item: CatalogItem) => (
           <div key={item._id} onClick={() => openItemView(item)} className="p-4 space-y-2 bg-gray-200 rounded-lg shadow-md cursor-pointer dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">
             <h4 className="text-lg font-bold">{item.title}</h4>
-            {item.mediaType === 'image' && <img src={item.mediaUrl} alt={item.title} className="w-full rounded-md" />}
+            {item.mediaType === 'image' && <Image src={item.mediaUrl} alt={item.title} width={400} height={300} className="w-full rounded-md" />}
             {item.mediaType === 'video' && <video src={item.mediaUrl} controls className="w-full rounded-md" />}
             <p>{item.description}</p>
           </div>
@@ -54,7 +55,7 @@ const UsersCatalog = () => {
         <div className="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-80" onClick={closeItemView}>
           <div className="p-8 m-4 space-y-4 overflow-auto bg-white rounded-lg shadow-md max-w-3xl max-h-3/4 dark:bg-gray-800">
             <h2 className="text-3xl font-bold">{selectedItem.title}</h2>
-            {selectedItem.mediaType === 'image' && <img src={selectedItem.mediaUrl} alt={selectedItem.title} className="w-full rounded-md" />}
+            {selectedItem.mediaType === 'image' && <Image src={selectedItem.mediaUrl} alt={selectedItem.title} width={400} height={300} className="w-full rounded-md" />}
             {selectedItem.mediaType === 'video' && <video src={selectedItem.mediaUrl} controls className="w-full rounded-md" />}
             <p>{selectedItem.description}</p>
           </div>

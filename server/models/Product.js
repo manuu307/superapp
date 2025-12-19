@@ -26,6 +26,9 @@ const ProductSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  categories: [{
+    type: String
+  }],
   business: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Business',

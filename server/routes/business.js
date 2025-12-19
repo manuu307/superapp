@@ -8,14 +8,36 @@ const auth = require('../middleware/auth');
 // @access  Private
 router.post('/', auth, async (req, res) => {
   try {
-    const { name, picture } = req.body;
+    const {
+      name,
+      picture,
+      bannerMedia,
+      aboutUs,
+      deliveryAvailable,
+      location,
+      subdomain,
+      openDaysHours
+    } = req.body;
     const owner = req.user.id;
+
+    if (subdomain) {
+      const existingBusiness = await Business.findOne({ subdomain });
+      if (existingBusiness) {
+        return res.status(400).json({ msg: 'Subdomain already in use' });
+      }
+    }
 
     const newBusiness = new Business({
       name,
       owner,
       admins: [owner],
-      picture
+      picture,
+      bannerMedia,
+      aboutUs,
+      deliveryAvailable,
+      location,
+      subdomain,
+      openDaysHours
     });
 
     const business = await newBusiness.save();
@@ -46,19 +68,42 @@ router.get('/', auth, async (req, res) => {
 // @access  Private
 router.put('/:id', auth, async (req, res) => {
   try {
-    const { name, picture } = req.body;
+    const {
+      name,
+      picture,
+      bannerMedia,
+      aboutUs,
+      deliveryAvailable,
+      location,
+      subdomain,
+      openDaysHours
+    } = req.body;
     const business = await Business.findById(req.params.id);
 
     if (!business) {
       return res.status(404).json({ msg: 'Business not found' });
     }
 
-    if (business.owner.toString() !== req.user.id) {
+    if (business.owner.toString() !== req.user.id && !business.admins.includes(req.user.id)) {
       return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    if (subdomain && subdomain !== business.subdomain) {
+      const existingBusiness = await Business.findOne({ subdomain });
+      if (existingBusiness) {
+        return res.status(400).json({ msg: 'Subdomain already in use' });
+      }
+      business.subdomain = subdomain;
     }
 
     business.name = name || business.name;
     business.picture = picture || business.picture;
+    business.bannerMedia = bannerMedia || business.bannerMedia;
+    business.aboutUs = aboutUs || business.aboutUs;
+    business.deliveryAvailable = deliveryAvailable === undefined ? business.deliveryAvailable : deliveryAvailable;
+    business.location = location || business.location;
+    business.openDaysHours = openDaysHours || business.openDaysHours;
+
 
     await business.save();
     res.json(business);
