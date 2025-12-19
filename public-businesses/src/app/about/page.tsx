@@ -53,14 +53,11 @@ const AboutPage = () => {
       {/* Banner Image */}
       {business.bannerMedia && (
         <div className="relative w-full h-64 md:h-80 rounded-xl overflow-hidden shadow-lg mb-8">
-          <Image
-            src={business.bannerMedia}
-            alt={`${business.name} banner`}
-            fill
-            sizes="100vw"
-            className="object-cover"
-            priority
-          />
+          <img
+          src={business.bannerMedia || 'https://via.placeholder.com/1200x400'}
+          alt={`${business.name} banner`}
+          className="w-full h-64 object-cover rounded-t-lg"
+        />
         </div>
       )}
 
@@ -69,12 +66,10 @@ const AboutPage = () => {
         <div className="flex items-center mb-6">
           {business.picture && (
             <div className="relative w-20 h-20 rounded-full overflow-hidden mr-4 border-4 border-white dark:border-gray-800 shadow-md">
-              <Image
-                src={business.picture}
+              <img
+                src={business.picture || 'https://via.placeholder.com/150'}
                 alt={business.name}
-                width={80}
-                height={80}
-                className="object-cover"
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-32 h-32 rounded-full border-4 border-white dark:border-gray-800"
               />
             </div>
           )}

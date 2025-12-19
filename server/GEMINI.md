@@ -15,8 +15,8 @@ The system is a monolithic Node.js application with a RESTful API and a real-tim
 | Authentication  | JWT                         | JSON Web Token-based authentication for securing API endpoints.                   |
 
 ## 3. User Authentication
-- **JWT-based Authentication:** User registration and login are handled via REST endpoints (`/api/auth/register`, `/api/auth/login`). Upon successful authentication, a JSON Web Token (JWT) is issued.
-- **Protected Routes:** API routes for user management (`/api/users`), business management (`/api/business`), product management (`/api/products`), room management (`/api/rooms`), and file uploads (`/api/files`) are protected using a JWT middleware.
+- **JWT-based Authentication:** User registration and login are handled via REST endpoints (`/api/v1/auth/register`, `/api/v1/auth/login`). Upon successful authentication, a JSON Web Token (JWT) is issued.
+- **Protected Routes:** API routes for user management (`/api/v1/users`), business management (`/api/v1/business`), product management (`/api/v1/products`), room management (`/api/v1/rooms`), and file uploads (`/api/v1/files`) are protected using a JWT middleware.
 - **Socket.io Authentication:** The Socket.io connection is authenticated using the JWT, which is passed from the client. A middleware on the server verifies the token.
 
 ## 4. Key Features

@@ -50,7 +50,7 @@ const BusinessProvider: React.FC<BusinessProviderProps> = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/business', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/business`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
