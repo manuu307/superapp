@@ -2,6 +2,18 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
+interface ProductItem {
+  _id: string;
+  name: string;
+  short_description: string;
+  description: string;
+  picture: string;
+  price_before: number;
+  price_after: number;
+  business: string;
+  categories: string[];
+}
+
 interface User {
   _id: string; // Assuming user has an ID
   username: string;
@@ -14,7 +26,7 @@ interface User {
   website?: string;
   profilePicture?: string;
   rooms?: string[];
-  catalog?: any[]; // Assuming catalog is an array of any for now, can be refined later
+  catalog?: ProductItem[]; // Assuming catalog is an array of any for now, can be refined later
 }
 
 interface AuthContextType {
@@ -33,50 +45,56 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('token');
-    }
-    return null;
-  });
+  const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchUser = useCallback(async () => {
+  useEffect(() => {
+    const storedToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const refetchUser = useCallback(async () => {
     if (token) {
+      setLoading(true);
       try {
-        // Use axios interceptor to set header
         axios.defaults.headers.common['x-auth-token'] = token;
         const { data } = await axios.get<User>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/auth/me`);
         setUser(data);
       } catch (error) {
         console.error('Failed to fetch user', error);
         setToken(null);
-        localStorage.removeItem('token');
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token');
+        }
+      } finally {
+        setLoading(false);
       }
     }
-    setLoading(false);
   }, [token]);
 
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    refetchUser();
+  }, [refetchUser]);
 
   const login = (newToken: string) => {
     setToken(newToken);
-    localStorage.setItem('token', newToken);
-    fetchUser(); // Fetch user data immediately after login
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('token', newToken);
+    }
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem('token');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+    }
     delete axios.defaults.headers.common['x-auth-token'];
-  };
-
-  const refetchUser = () => {
-    fetchUser();
   };
 
   return (

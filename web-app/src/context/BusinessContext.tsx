@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 interface AuthContextType {
@@ -40,7 +40,7 @@ const BusinessProvider: React.FC<BusinessProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchBusinessData = async () => {
+  const fetchBusinessData = useCallback(async () => {
     if (!token) {
       setError('Authentication token not found.');
       setLoading(false);
@@ -60,16 +60,20 @@ const BusinessProvider: React.FC<BusinessProviderProps> = ({ children }) => {
       }
       const data = await response.json();
       setBusinessData(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchBusinessData();
-  }, [token]); // Re-fetch if token changes
+  }, [fetchBusinessData]); // Re-fetch if token changes
 
   return (
     <BusinessContext.Provider value={{ businessData, loading, error, fetchBusinessData }}>
@@ -77,7 +81,6 @@ const BusinessProvider: React.FC<BusinessProviderProps> = ({ children }) => {
     </BusinessContext.Provider>
   );
 };
-
 export const useBusiness = () => {
   const context = useContext(BusinessContext);
   if (context === undefined) {

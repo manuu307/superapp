@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 interface ProductItem {
   _id: string;
@@ -14,16 +14,14 @@ interface ProductItem {
 }
 
 interface BusinessCatalogProps {
-  businessId: string;
   products: ProductItem[];
   onProductsChange: () => void;
 }
 
-const BusinessCatalog = ({ businessId, products, onProductsChange }: BusinessCatalogProps) => {
+const BusinessCatalog = ({ products, onProductsChange }: BusinessCatalogProps) => {
   const [selectedItem, setSelectedItem] = useState<ProductItem | null>(null);
   const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+
 
 
   const openItemView = (item: ProductItem) => {
@@ -113,7 +111,7 @@ const BusinessCatalog = ({ businessId, products, onProductsChange }: BusinessCat
         body: JSON.stringify(updatedProductData),
       });
       if (!res.ok) throw new Error('Failed to update product');
-      const updatedProduct = await res.json();
+      await res.json();
       setEditingProduct(null);
       onProductsChange();
     } catch (error) {
@@ -121,13 +119,7 @@ const BusinessCatalog = ({ businessId, products, onProductsChange }: BusinessCat
     }
   };
 
-  if (loading) {
-    return <div>Loading catalog...</div>;
-  }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   if (products.length === 0) {
     return <div>No products in catalog.</div>;
@@ -140,7 +132,7 @@ const BusinessCatalog = ({ businessId, products, onProductsChange }: BusinessCat
         {products.map((item) => (
           <div key={item._id} onClick={() => openItemView(item)} className="p-4 space-y-2 bg-gray-200 rounded-lg shadow-md cursor-pointer dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">
             <h4 className="text-lg font-bold">{item.name}</h4>
-            <img src={item.picture} alt={item.name} className="w-full rounded-md" />
+            <img src={item.picture} alt={item.name} width={400} height={300} className="w-full rounded-md" />
             <p>{item.short_description}</p>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-500 line-through">${item.price_before}</span>
@@ -154,7 +146,7 @@ const BusinessCatalog = ({ businessId, products, onProductsChange }: BusinessCat
         <div className="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-80" onClick={closeItemView}>
           <div className="p-8 m-4 space-y-4 overflow-auto bg-white rounded-lg shadow-md max-w-3xl max-h-3/4 dark:bg-gray-800">
             <h2 className="text-3xl font-bold">{selectedItem.name}</h2>
-            <img src={selectedItem.picture} alt={selectedItem.name} className="w-full rounded-md" />
+            <img src={selectedItem.picture} alt={selectedItem.name} width={400} height={300} className="w-full rounded-md" />
             <p className="text-lg">{selectedItem.short_description}</p>
             <p>{selectedItem.description}</p>
             <div className="flex items-center justify-between">

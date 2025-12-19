@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface Product {
   _id: string;
@@ -56,8 +57,12 @@ const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
         }, []);
         const uniqueCategories = [...new Set(allCategories)];
         setCategories(uniqueCategories);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unknown error occurred');
+        }
       } finally {
         setLoading(false);
       }
@@ -87,14 +92,18 @@ const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
   return (
     <div className="p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
       <div className="relative">
-        <img
+        <Image
           src={business.bannerMedia || 'https://via.placeholder.com/1200x400'}
           alt={`${business.name} banner`}
+          width={1200}
+          height={400}
           className="w-full h-64 object-cover rounded-t-lg"
         />
-        <img
+        <Image
           src={business.picture || 'https://via.placeholder.com/150'}
           alt={business.name}
+          width={128}
+          height={128}
           className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-32 h-32 rounded-full border-4 border-white dark:border-gray-800"
         />
       </div>
@@ -124,7 +133,7 @@ const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredProducts.map(product => (
           <div key={product._id} className="bg-gray-100 dark:bg-gray-900 p-4 rounded-lg">
-            <img src={product.picture} alt={product.name} className="w-full h-48 object-cover rounded-md mb-4" />
+            <Image src={product.picture} alt={product.name} width={256} height={192} className="w-full h-48 object-cover rounded-md mb-4" />
             <h3 className="text-xl font-bold">{product.name}</h3>
             <p className="text-gray-600 dark:text-gray-400">{product.short_description}</p>
             <div className="flex justify-between items-center mt-4">

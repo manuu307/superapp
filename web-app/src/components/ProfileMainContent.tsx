@@ -8,6 +8,18 @@ interface Contact {
   username: string;
 }
 
+interface ProductItem {
+  _id: string;
+  name: string;
+  short_description: string;
+  description: string;
+  picture: string;
+  price_before: number;
+  price_after: number;
+  business: string;
+  categories: string[];
+}
+
 interface User {
   _id: string;
   username: string;
@@ -20,7 +32,7 @@ interface User {
   website?: string;
   profilePicture?: string;
   rooms?: string[];
-  catalog?: any[];
+  catalog?: ProductItem[];
   contacts?: Contact[];
 }
 
@@ -47,8 +59,12 @@ const ProfileMainContent = () => {
       });
       const data: Contact[] = await response.json();
       setSearchResults(data);
-    } catch (err) {
-      console.error(err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error('An unknown error occurred during search');
+      }
     }
   };
 
@@ -59,8 +75,12 @@ const ProfileMainContent = () => {
         headers: { 'x-auth-token': token || '' }
       });
       refetchUser();
-    } catch (err) {
-      console.error(err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error('An unknown error occurred when adding a contact');
+      }
     }
   };
 
@@ -71,8 +91,12 @@ const ProfileMainContent = () => {
         headers: { 'x-auth-token': token || '' }
       });
       refetchUser();
-    } catch (err) {
-      console.error(err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error('An unknown error occurred when removing a contact');
+      }
     }
   };
 

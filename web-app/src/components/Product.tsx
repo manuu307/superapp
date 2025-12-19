@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 
 interface ProductItem {
 
@@ -67,73 +67,11 @@ const Product: React.FC<ProductProps> = ({ businessId, onProductsChange }) => {
 
   };
 
-  
-
-  const handleEdit = (product: ProductItem) => {
-
-    setEditingProduct(product);
-
-    setName(product.name);
-
-    setShortDescription(product.short_description);
-
-    setDescription(product.description);
-
-    setPriceBefore(product.price_before.toString());
-
-    setPriceAfter(product.price_after.toString());
-
-    setCategories(product.categories.join(','));
-
-    setPictureFile(null);
-
-  };
 
 
 
-  const handleDelete = async (productId: string) => {
 
-    if (window.confirm('Are you sure you want to delete this product?')) {
 
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-
-        setError('Authentication token not found. Please log in.');
-
-        return;
-
-      }
-
-      try {
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/products/${productId}`, {
-
-          method: 'DELETE',
-
-          headers: { 'x-auth-token': token }
-
-        });
-
-        if (!res.ok) {
-
-          throw new Error('Failed to delete product');
-
-        }
-
-        onProductsChange();
-
-      } catch (error: any) {
-
-        console.error('Error deleting product:', error);
-
-        setError(error.message || 'Failed to delete product.');
-
-      }
-
-    }
-
-  };
 
 
 
@@ -191,14 +129,13 @@ const Product: React.FC<ProductProps> = ({ businessId, onProductsChange }) => {
 
         pictureUrl = url;
 
-      } catch (err) {
-
-        console.error(err);
-
-        setError('File upload failed.');
-
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('File upload failed.');
+        }
         return;
-
       }
 
     }
@@ -251,9 +188,11 @@ const Product: React.FC<ProductProps> = ({ businessId, onProductsChange }) => {
 
 
 
-      const updatedProduct = await response.json();
+            await response.json();
 
-      onProductsChange();
+
+
+            onProductsChange();
 
       setEditingProduct(null);
 
@@ -271,12 +210,12 @@ const Product: React.FC<ProductProps> = ({ businessId, onProductsChange }) => {
 
       setPictureFile(null);
 
-    } catch (err: any) {
-
-      console.error(err);
-
-      setError(err.message || 'Failed to update product.');
-
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to update product.');
+      }
     }
 
   };
@@ -355,14 +294,13 @@ const Product: React.FC<ProductProps> = ({ businessId, onProductsChange }) => {
 
         pictureUrl = url;
 
-      } catch (err: any) {
-
-        console.error(err);
-
-        setError(err.message || 'File upload failed. Please try again.');
-
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('File upload failed. Please try again.');
+        }
         return;
-
       }
 
     }
@@ -433,12 +371,12 @@ const Product: React.FC<ProductProps> = ({ businessId, onProductsChange }) => {
 
       onProductsChange();
 
-    } catch (err: any) {
-
-      console.error(err);
-
-      setError(err.message || 'An error occurred while creating the product.');
-
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An error occurred while creating the product.');
+      }
     }
 
   };

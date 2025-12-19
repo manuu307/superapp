@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { AuthContext } from './AuthContext';
 
@@ -15,6 +15,21 @@ interface User {
   // Add other user properties if they are used in this component
 }
 
+interface UserInRoom {
+  _id: string;
+  username: string;
+}
+
+interface Room {
+  _id: string;
+  name: string;
+  description?: string;
+  isPrivate: boolean;
+  tags: string[];
+  users: UserInRoom[];
+  admins: UserInRoom[];
+}
+
 interface AuthContextType {
   token: string | null;
   user: User | null;
@@ -22,7 +37,7 @@ interface AuthContextType {
 
 interface SocialContextType {
   room: string;
-  setRoom: (room: string) => void;
+  setRoom: (room: string | null) => void;
   rooms: string[];
   message: string;
   setMessage: (message: string) => void;
@@ -30,7 +45,7 @@ interface SocialContextType {
   sendMessage: (e: React.FormEvent) => void;
   showCreateRoom: boolean;
   setShowCreateRoom: (show: boolean) => void;
-  handleRoomCreated: (roomName: string) => void; // Refined type for room
+  handleRoomCreated: (room: Room) => void;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -44,22 +59,35 @@ let socket: Socket;
 
 const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
   const { token, user } = useContext(AuthContext) as AuthContextType;
-  const [room, setRoom] = useState<string>('General');
-  const [rooms, setRooms] = useState<string[]>([]);
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+  const [newlyCreatedRooms, setNewlyCreatedRooms] = useState<string[]>([]);
+
+  const rooms = useMemo(() => {
+    const userRooms = user?.rooms || [];
+    const allRooms = new Set([...userRooms, ...newlyCreatedRooms]);
+    return Array.from(allRooms);
+  }, [user, newlyCreatedRooms]);
+
+  const room = useMemo(() => {
+    if (selectedRoom && rooms.includes(selectedRoom)) {
+      return selectedRoom;
+    }
+    if (rooms.length > 0) {
+      return rooms[0];
+    }
+    return 'General';
+  }, [selectedRoom, rooms]);
+
+  useEffect(() => {
+    if (room !== selectedRoom) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedRoom(room);
+    }
+  }, [room, selectedRoom]);
+
   const [message, setMessage] = useState<string>('');
   const [chat, setChat] = useState<Message[]>([]);
   const [showCreateRoom, setShowCreateRoom] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (user) {
-      setRooms(user.rooms || []);
-      if (user.rooms && user.rooms.length > 0 && !user.rooms.includes(room)) {
-        setRoom(user.rooms[0]);
-      } else if (!user.rooms || user.rooms.length === 0) {
-        setRoom('General'); // Default to General if no rooms
-      }
-    }
-  }, [user, room]);
 
   useEffect(() => {
     if (token) {
@@ -103,9 +131,9 @@ const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
     }
   }, [message, room]);
 
-  const handleRoomCreated = useCallback((newRoomName: string) => {
-    setRooms((prevRooms) => [...prevRooms, newRoomName]);
-    setRoom(newRoomName);
+  const handleRoomCreated = useCallback((newRoom: Room) => {
+    setNewlyCreatedRooms((prevRooms) => [...prevRooms, newRoom.name]);
+    setSelectedRoom(newRoom.name);
     setShowCreateRoom(false);
   }, []);
 
@@ -140,7 +168,7 @@ const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
   return (
     <SocialContext.Provider value={{
       room,
-      setRoom,
+      setRoom: setSelectedRoom,
       rooms,
       message,
       setMessage,
@@ -157,3 +185,4 @@ const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
 };
 
 export { SocialContext, SocialProvider };
+export type { SocialContextType, Room };
