@@ -1,6 +1,5 @@
 "use client";
 import React, { useContext } from 'react';
-import Image from 'next/image';
 import { SocialContext, SocialProvider, type SocialContextType } from '../context/SocialContext';
 import CreateRoom from '../components/CreateRoom';
 import { AuthContext } from '../context/AuthContext';
@@ -15,7 +14,6 @@ interface AuthContextType {
   user: { username: string } | null;
   token: string | null;
 }
-
 
 
 const Chat = () => {
