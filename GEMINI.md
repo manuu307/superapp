@@ -54,3 +54,17 @@ The system achieves horizontal scaling (running multiple Node.js instances) usin
 - **Components:**
     - `client/src/components/Login.jsx`: Login form.
     - `client/src/components/Register.jsx`: Registration form.
+
+## 9. B2C Chat Widget Implementation Summary
+
+*   **Database:**
+    *   The `User` model was updated to include an `isGuest` flag to differentiate between registered and guest users.
+    *   The `Room` model was updated to include `business` and `guest` references for B2C chat rooms.
+*   **Backend:**
+    *   A new public API endpoint `POST /api/v1/public/chat/initiate` was created to allow guest users to initiate chats from public business profiles.
+    *   The backend now uses Socket.io to send real-time notifications to business owners when a new chat room is created.
+*   **Frontend (`public-businesses`):**
+    *   A `BusinessChatWidget` component was created with a lead generation form and a real-time chat window.
+    *   The widget was integrated into the `BusinessPublicProfile` page.
+*   **Frontend (`web-app`):**
+    *   The `SocialContext` was updated to listen for new room creation events, ensuring the business owner's chat list is updated in real-time.

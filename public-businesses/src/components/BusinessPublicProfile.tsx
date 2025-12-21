@@ -43,6 +43,8 @@ interface ProductItem {
   categories: string[];
 }
 
+import BusinessChatWidget from './BusinessChatWidget';
+
 const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
   const [business, setBusiness] = useState<Business | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
@@ -180,6 +182,7 @@ const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
           </div>
         </div>
       )}
+      <BusinessChatWidget businessId={businessId} enabled={true} />
     </div>
   );
 };

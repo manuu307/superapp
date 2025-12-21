@@ -101,10 +101,17 @@ async function startServer() {
     }
   });
 
+  const userSockets = new Map();
+
   // 4. Socket.io Event Handling
   io.on('connection', (socket) => {
     // HOSTNAME is the Docker container ID, useful for debugging load balancing
     console.log(`[${process.env.HOSTNAME}] User connected: ${socket.id}`);
+
+    // Store user's socket ID
+    if (socket.user && socket.user.id) {
+      userSockets.set(socket.user.id, socket.id);
+    }
 
     // Event: User joins a room (e.g., 'General' or a 'Direct Message' ID)
     socket.on('join_room', async (room) => {
@@ -138,7 +145,7 @@ async function startServer() {
         // 1. Structure and Save to MongoDB
         const newMessage = new Message({
           room: data.room,
-          sender: user.username, // Use authenticated user's username
+          sender: user.email, // Use authenticated user's email
           text: data.text
         });
         // Mongoose automatically adds _id and timestamp
@@ -154,8 +161,14 @@ async function startServer() {
 
     socket.on('disconnect', () => {
       console.log('User disconnected');
+      if (socket.user && socket.user.id) {
+        userSockets.delete(socket.user.id);
+      }
     });
   });
+
+  app.set('io', io);
+  app.set('userSockets', userSockets);
 
   server.listen(port, () => {
     console.log(`Node.js Chat Server listening on port ${port}`);
