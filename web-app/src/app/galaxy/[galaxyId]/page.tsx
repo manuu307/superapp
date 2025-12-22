@@ -39,7 +39,7 @@ const GalaxyFormPage = () => {
       const fetchGalaxyData = async () => {
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/galaxies/${galaxyId}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { 'x-auth-token': token || '' }
           });
           if (res.ok) {
             const data = await res.json();
@@ -91,7 +91,7 @@ const GalaxyFormPage = () => {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'x-auth-token': token || ''
         },
         body: JSON.stringify(payload),
       });
