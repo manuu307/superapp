@@ -35,9 +35,7 @@ const UniversePage = () => {
       if (token) {
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/galaxies`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+            headers: { 'x-auth-token': token || '' }
           });
           if (res.ok) {
             const data = await res.json();
