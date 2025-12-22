@@ -28,6 +28,8 @@ const businessRoutes = require('./routes/business');
 app.use('/api/v1/business', businessRoutes);
 const productRoutes = require('./routes/products');
 app.use('/api/v1/products', productRoutes);
+const galaxyRoutes = require('./routes/galaxies');
+app.use('/api/v1/galaxies', galaxyRoutes);
 const publicRoutes = require('./routes/public');
 app.use('/api/v1/public', publicRoutes);
 

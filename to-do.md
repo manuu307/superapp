@@ -18,7 +18,7 @@ I want to create a new entity.
 This entity will be named "Galaxy".                                                 
 - One galaxy can have multiple "rooms" (see it on "server/models" folder) but one   
 room can only have 1 galaxy.          
-Galaxy(s) MUST have: name, admins(users)                                          
+Galaxy(s) MUST have: name, admins(users), tags(at least one)                                         
 - Galaxy(s) CAN have: description, purpose, rooms, guests(users), watchers(users),  
 participants(users), managers(users)                                                
                                                                                 
@@ -27,4 +27,4 @@ On the front-end of the proyect (web-app) we must create a new menu item named
 matter what role it has).                                                           
                                                                                 
 This universe must be displayed on cards one below another one (if it is mobile) and
-on Desktop must be displayer on Grid. 
+on Desktop must be displayer on Grid. This needs to have filters by tags on the top of the view.

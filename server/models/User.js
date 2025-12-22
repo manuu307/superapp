@@ -27,6 +27,10 @@ const UserSchema = new mongoose.Schema({
     type: [String],
     default: []
   },
+  galaxies: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Galaxy'
+  }],
   name: {
     type: String,
     trim: true

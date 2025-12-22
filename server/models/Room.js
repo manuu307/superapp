@@ -6,6 +6,10 @@ const RoomSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  galaxy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Galaxy'
+  },
   business: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Business'

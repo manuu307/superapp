@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useContext } from 'react';
+import { useRouter } from 'next/navigation';
 import UsersCatalog from './UsersCatalog';
 import { AuthContext } from '../context/AuthContext';
 
@@ -49,6 +50,7 @@ const ProfileMainContent = () => {
   const { user, token, refetchUser } = useContext(AuthContext) as AuthContextType;
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResults, setSearchResults] = useState<Contact[]>([]);
+  const router = useRouter();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,6 +109,15 @@ const ProfileMainContent = () => {
   return (
     <>
     <div className="flex-1 p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+      <div className="flex justify-between items-center mb-4">
+        <h4 className="text-xl font-bold">My Universe</h4>
+        <button 
+          onClick={() => router.push('/galaxy/new')}
+          className="px-4 py-2 font-bold text-white bg-green-500 rounded-md hover:bg-green-700"
+        >
+          + Create New Universe
+        </button>
+      </div>
       <div>
         <h4 className="mb-2 text-xl font-bold">Rooms</h4>
         <ul className="space-y-2">
