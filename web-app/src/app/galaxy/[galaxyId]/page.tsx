@@ -83,7 +83,7 @@ const GalaxyFormPage = () => {
       return;
     }
 
-    const url = isNew ? `${process.env.NEXT_PUBLIC_API_URL}/galaxies` : `${process.env.NEXT_PUBLIC_API_URL}/galaxies/${galaxyId}`;
+    const url = isNew ? `${process.env.NEXT_PUBLIC_API_BASE_PATH}/galaxies` : `${process.env.NEXT_PUBLIC_API_BASE_PATH}/galaxies/${galaxyId}`;
     const method = isNew ? 'POST' : 'PUT';
 
     try {
