@@ -29,7 +29,7 @@ interface User {
   catalog?: ProductItem[]; // Assuming catalog is an array of any for now, can be refined later
 }
 
-interface AuthContextType {
+export interface AuthContextType {
   token: string | null;
   user: User | null;
   login: (newToken: string) => void;

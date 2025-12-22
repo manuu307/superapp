@@ -2,16 +2,26 @@
 
 import { useState, useEffect, useContext } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { AuthContext } from '@/context/AuthContext';
+import { AuthContext, AuthContextType } from '@/context/AuthContext';
 import { ThemeContext } from '@/context/ThemeContext';
+import { withProtectedRoute } from '@/app/withProtectedRoute';
 
 const GalaxyFormPage = () => {
   const router = useRouter();
   const params = useParams();
   const { galaxyId } = params;
 
-  const { token } = useContext(AuthContext);
-  const { theme } = useContext(ThemeContext);
+  const authContext = useContext(AuthContext);
+  const themeContext = useContext(ThemeContext);
+
+  if (!authContext || !themeContext) {
+    // This can happen if the context provider is not available.
+    // withProtectedRoute should prevent this, but it's good practice to check.
+    return <div>Loading...</div>;
+  }
+
+  const { token } = authContext;
+  const { theme } = themeContext;
 
   const [formData, setFormData] = useState({
     name: '',
@@ -148,4 +158,4 @@ const GalaxyFormPage = () => {
   );
 };
 
-export default GalaxyFormPage;
+export default withProtectedRoute(GalaxyFormPage);

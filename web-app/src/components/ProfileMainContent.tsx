@@ -2,49 +2,8 @@
 import React, { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import UsersCatalog from './UsersCatalog';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext, AuthContextType } from '../context/AuthContext';
 
-interface Contact {
-  _id: string;
-  username: string;
-}
-
-interface ProductItem {
-  _id: string;
-  name: string;
-  short_description: string;
-  description: string;
-  picture: string;
-  price_before: number;
-  price_after: number;
-  business: string;
-  categories: string[];
-}
-
-interface User {
-  _id: string;
-  username: string;
-  email?: string;
-  name?: string;
-  lastname?: string;
-  nickname?: string;
-  tags?: string[];
-  description?: string;
-  website?: string;
-  profilePicture?: string;
-  rooms?: string[];
-  catalog?: ProductItem[];
-  contacts?: Contact[];
-}
-
-interface AuthContextType {
-  token: string | null;
-  user: User | null;
-  login: (newToken: string) => void;
-  logout: () => void;
-  loading: boolean;
-  refetchUser: () => void;
-}
 
 const ProfileMainContent = () => {
   const { user, token, refetchUser } = useContext(AuthContext) as AuthContextType;
