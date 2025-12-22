@@ -38,7 +38,7 @@ const GalaxyFormPage = () => {
       setIsNew(false);
       const fetchGalaxyData = async () => {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/galaxies/${galaxyId}`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/galaxies/${galaxyId}`, {
             headers: { 'x-auth-token': token || '' }
           });
           if (res.ok) {

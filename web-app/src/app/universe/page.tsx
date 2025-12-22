@@ -34,7 +34,7 @@ const UniversePage = () => {
     const fetchGalaxies = async () => {
       if (token) {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/galaxies`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/galaxies`, {
             headers: { 'x-auth-token': token || '' }
           });
           if (res.ok) {
