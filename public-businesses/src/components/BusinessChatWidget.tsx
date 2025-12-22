@@ -2,8 +2,27 @@
 import { useState, useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
 
+interface Business {
+  _id: string;
+  name: string;
+  picture?: string;
+  bannerMedia?: string;
+  aboutUs?: string;
+  deliveryAvailable?: boolean;
+  location?: {
+    address: string;
+    latitude: number;
+    longitude: number;
+  };
+  openDaysHours?: {
+    dayOfWeek: string;
+    openTime: string;
+    closeTime: string;
+  }[];
+}
+
 interface BusinessChatWidgetProps {
-  businessId: string;
+  business: Business;
   enabled: boolean;
 }
 
@@ -24,7 +43,7 @@ interface GuestSession {
   };
 }
 
-const BusinessChatWidget: React.FC<BusinessChatWidgetProps> = ({ businessId, enabled }) => {
+const BusinessChatWidget: React.FC<BusinessChatWidgetProps> = ({ business, enabled }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [session, setSession] = useState<GuestSession | null>(null);
   const [name, setName] = useState('');
@@ -34,11 +53,11 @@ const BusinessChatWidget: React.FC<BusinessChatWidgetProps> = ({ businessId, ena
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    const storedSession = localStorage.getItem(`guestSession_${businessId}`);
+    const storedSession = localStorage.getItem(`guestSession_${business._id}`);
     if (storedSession) {
       setSession(JSON.parse(storedSession));
     }
-  }, [businessId]);
+  }, [business._id]);
 
   useEffect(() => {
     if (session && isOpen) {
@@ -76,11 +95,11 @@ const BusinessChatWidget: React.FC<BusinessChatWidgetProps> = ({ businessId, ena
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/public/chat/initiate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, businessId }),
+        body: JSON.stringify({ name, email, businessId:business._id }),
       });
       if (res.ok) {
         const data = await res.json();
-        localStorage.setItem(`guestSession_${businessId}`, JSON.stringify(data));
+        localStorage.setItem(`guestSession_${business._id}`, JSON.stringify(data));
         setSession(data);
       }
     } catch (error) {
@@ -94,6 +113,17 @@ const BusinessChatWidget: React.FC<BusinessChatWidgetProps> = ({ businessId, ena
       socketRef.current.emit('send_message', { room: session?.roomName, text: message });
       setMessage('');
     }
+  };
+
+  const formatRoomName = (roomName: string) => {
+    const parts = roomName.split(' - ');
+    if (parts.length === 2) {
+      const timestamp = new Date(parseInt(parts[1]));
+      if (!isNaN(timestamp.getTime())) {
+        return `${parts[0]} - ${timestamp.toLocaleString()}`;
+      }
+    }
+    return roomName;
   };
 
   if (!enabled) {
@@ -137,7 +167,7 @@ const BusinessChatWidget: React.FC<BusinessChatWidgetProps> = ({ businessId, ena
           ) : (
             <>
               <div className="p-4 border-b">
-                <h3 className="text-lg font-bold">{session.roomName}</h3>
+                <h3 className="text-lg font-bold">{business.name}</h3>
               </div>
               <div className="flex-1 p-4 overflow-y-auto">
                 {chat.map((msg, i) => (

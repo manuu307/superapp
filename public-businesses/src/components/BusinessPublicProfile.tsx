@@ -182,7 +182,7 @@ const BusinessPublicProfile = ({ businessId }: { businessId: string }) => {
           </div>
         </div>
       )}
-      <BusinessChatWidget businessId={businessId} enabled={true} />
+      <BusinessChatWidget business={business} enabled={true} />
     </div>
   );
 };

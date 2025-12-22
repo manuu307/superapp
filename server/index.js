@@ -145,7 +145,7 @@ async function startServer() {
         // 1. Structure and Save to MongoDB
         const newMessage = new Message({
           room: data.room,
-          sender: user.email, // Use authenticated user's email
+          sender: user.username, // Use authenticated user's email
           text: data.text
         });
         // Mongoose automatically adds _id and timestamp

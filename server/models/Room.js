@@ -10,7 +10,19 @@ const RoomSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Business'
   },
-  guest: {
+  admins: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  users: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  watchers: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  guests: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
@@ -18,14 +30,6 @@ const RoomSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  users: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
-  admins: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
   isPrivate: {
     type: Boolean,
     default: true

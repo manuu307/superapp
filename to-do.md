@@ -9,3 +9,22 @@ FRONTEND WIDGET (React):Create a component BusinessChatWidget.jsx that accepts b
 BACKEND (Node.js/Socket.io):Add a socket event join_business_room that uses the roomId.Implement send_message event:Save message to MongoDB.Broadcast to the room via Redis adapter.Create an API endpoint POST /api/chat/initiate to handle the Lead Gen form and return/create the Room.
 
 UI/UX REQUIREMENTS:Use a modern "WeChat" or "WhatsApp" bubble style.Ensure the widget is responsive and doesn't block the main profile content.
+
+
+New Prompt:
+
+I want to create a new entity.                                                      
+                                                                                
+This entity will be named "Galaxy".                                                 
+- One galaxy can have multiple "rooms" (see it on "server/models" folder) but one   
+room can only have 1 galaxy.          
+Galaxy(s) MUST have: name, admins(users)                                          
+- Galaxy(s) CAN have: description, purpose, rooms, guests(users), watchers(users),  
+participants(users), managers(users)                                                
+                                                                                
+On the front-end of the proyect (web-app) we must create a new menu item named      
+"Universe" and inside will be a list of Galaxy(s) that the user is member (doesn't  
+matter what role it has).                                                           
+                                                                                
+This universe must be displayed on cards one below another one (if it is mobile) and
+on Desktop must be displayer on Grid. 

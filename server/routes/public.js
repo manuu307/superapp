@@ -61,23 +61,10 @@ router.post('/chat/initiate', async (req, res) => {
         guest: guest._id,
         users: [guest._id, business.owner],
         admins: [business.owner],
-        name: `${business.name}: ${guest.email}`,
+        name: `${business.name}: ${guest.email} - ${Date.now()}`,
         isPrivate: true,
       });
-
-      try {
-        await room.save();
-      } catch (error) {
-        if (error.code === 11000) {
-          const roomNameRegex = new RegExp(`^${room.name}(-\\d+)?$`);
-          const rooms = await Room.find({ name: roomNameRegex });
-          const newName = `${room.name} - ${rooms.length + 1}`;
-          room.name = newName;
-          await room.save();
-        } else {
-          throw error;
-        }
-      }
+      await room.save();
       
       await User.findByIdAndUpdate(guest._id, { $addToSet: { rooms: room.name } });
       await User.findByIdAndUpdate(business.owner, { $addToSet: { rooms: room.name } });
