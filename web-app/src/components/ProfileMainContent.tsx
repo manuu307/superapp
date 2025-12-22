@@ -4,11 +4,10 @@ import { useRouter } from 'next/navigation';
 import UsersCatalog from './UsersCatalog';
 import { AuthContext, AuthContextType } from '../context/AuthContext';
 
-
 const ProfileMainContent = () => {
   const { user, token, refetchUser } = useContext(AuthContext) as AuthContextType;
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [searchResults, setSearchResults] = useState<Contact[]>([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const router = useRouter();
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -18,7 +17,7 @@ const ProfileMainContent = () => {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/users/search?query=${searchQuery}`, {
         headers: { 'x-auth-token': token || '' }
       });
-      const data: Contact[] = await response.json();
+      const data = await response.json();
       setSearchResults(data);
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -88,7 +87,7 @@ const ProfileMainContent = () => {
         <div className="flex-1 p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
         <h4 className="mb-2 text-xl font-bold">Contacts</h4>
         <ul className="space-y-2">
-          {user.contacts && user.contacts.map((contact: Contact) => (
+          {user.contacts && user.contacts.map((contact) => (
             <li key={contact._id} className="flex items-center justify-between p-2 bg-gray-200 rounded-md dark:bg-gray-700">
               <span>{contact.username}</span>
               <button onClick={() => removeContact(contact._id)} className="px-3 py-1 font-bold text-white bg-red-500 rounded-md hover:bg-red-700">Remove</button>
@@ -108,7 +107,7 @@ const ProfileMainContent = () => {
             <button type="submit" className="px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Search</button>
           </form>
           <ul className="mt-2 space-y-2">
-            {searchResults.map((foundUser: Contact) => (
+            {searchResults.map((foundUser) => (
               <li key={foundUser._id} className="flex items-center justify-between p-2 bg-gray-200 rounded-md dark:bg-gray-700">
                 <span>{foundUser.username}</span>
                 <button onClick={() => addContact(foundUser._id)} className="px-3 py-1 font-bold text-white bg-green-500 rounded-md hover:bg-green-700">Add</button>

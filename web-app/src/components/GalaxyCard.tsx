@@ -1,9 +1,15 @@
 import React, { useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import { ThemeContext } from '@/context/ThemeContext';
 
-const GalaxyCard = ({ galaxy }) => {
-  const { theme } = useContext(ThemeContext);
+interface Galaxy {
+  _id: string;
+  name: string;
+  description: string;
+  purpose: string;
+  tags: string[];
+}
+
+const GalaxyCard = ({ galaxy }: { galaxy: Galaxy }) => {
   const router = useRouter();
 
   const handleEdit = () => {
@@ -11,7 +17,7 @@ const GalaxyCard = ({ galaxy }) => {
   };
 
   return (
-    <div className={`rounded-lg shadow-md p-4 flex flex-col justify-between ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+    <div className={"rounded-lg shadow-md p-4 flex flex-col justify-between dark:bg-gray-800"}>
       <div>
         <h2 className="text-xl font-bold mb-2">{galaxy.name}</h2>
         <p className="text-sm mb-2">{galaxy.description}</p>

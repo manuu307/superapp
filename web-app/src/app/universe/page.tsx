@@ -1,69 +1,30 @@
 "use client";
 
 import { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '@/context/AuthContext';
+import { AuthContext, AuthContextType } from '@/context/AuthContext';
 import GalaxyCard from '@/components/GalaxyCard';
 import { ThemeContext }from '@/context/ThemeContext';
+import { withProtectedRoute } from '../withProtectedRoute';
 
-// Mock galaxy data for testing
-const mockGalaxies = [
-    {
-        _id: "1",
-        name: "Milky Way",
-        description: "The galaxy containing our Solar System.",
-        purpose: "To explore and understand our cosmic neighborhood.",
-        tags: ["home", "spiral", "barred"],
-        admins: [],
-        managers: [],
-        participants: [],
-        guests: [],
-        watchers: [],
-        rooms: []
-    },
-    {
-        _id: "2",
-        name: "Andromeda",
-        description: "The nearest major galaxy to the Milky Way.",
-        purpose: "To study galactic evolution and collision.",
-        tags: ["spiral", "neighbor", "collision-course"],
-        admins: [],
-        managers: [],
-        participants: [],
-        guests: [],
-        watchers: [],
-        rooms: []
-    },
-    {
-        _id: "3",
-        name: "Triangulum",
-        description: "The third-largest member of the Local Group.",
-        purpose: "To observe star formation in a smaller galaxy.",
-        tags: ["spiral", "local-group", "star-formation"],
-        admins: [],
-        managers: [],
-        participants: [],
-        guests: [],
-        watchers: [],
-        rooms: []
-    },
-    {
-        _id: "4",
-        name: "Whirlpool",
-        description: "A classic spiral galaxy with well-defined arms.",
-        purpose: "To admire the beauty of galactic structure.",
-        tags: ["spiral", "grand-design", "interacting"],
-        admins: [],
-        managers: [],
-        participants: [],
-        guests: [],
-        watchers: [],
-        rooms: []
-    }
-];
+interface Galaxy {
+  _id: string;
+  name: string;
+  description: string;
+  purpose: string;
+  tags: string[];
+}
 
 const UniversePage = () => {
-  const { user, token } = useContext(AuthContext);
-  const { theme } = useContext(ThemeContext);
+  const authContext = useContext(AuthContext);
+  const themeContext = useContext(ThemeContext);
+
+  if (!authContext || !themeContext) {
+    return <div>Loading...</div>;
+  }
+
+  const { user, token } = authContext;
+  const { theme } = themeContext;
+  
   const [galaxies, setGalaxies] = useState([]);
   const [filteredGalaxies, setFilteredGalaxies] = useState([]);
   const [tags, setTags] = useState<string[]>([]);
@@ -73,7 +34,6 @@ const UniversePage = () => {
     const fetchGalaxies = async () => {
       if (token) {
         try {
-            /*
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/galaxies`, {
             headers: {
               'Authorization': `Bearer ${token}`
@@ -83,20 +43,13 @@ const UniversePage = () => {
             const data = await res.json();
             setGalaxies(data);
             setFilteredGalaxies(data);
-            const allTags = data.reduce((acc, galaxy) => {
-              return [...acc, ...galaxy.tags.filter(tag => !acc.includes(tag))];
+            const allTags = data.reduce((acc: string[], galaxy: { tags: any; }) => {
+              return [...acc, ...galaxy.tags.filter((tag: any) => !acc.includes(tag))];
             }, []);
             setTags(allTags);
           } else {
             console.error('Failed to fetch galaxies');
           }
-          */
-            setGalaxies(mockGalaxies);
-            setFilteredGalaxies(mockGalaxies);
-            const allTags = mockGalaxies.reduce((acc, galaxy) => {
-                return [...acc, ...galaxy.tags.filter(tag => !acc.includes(tag))];
-            }, []);
-            setTags(allTags);
         } catch (error) {
           console.error('Error fetching galaxies:', error);
         }
@@ -109,7 +62,7 @@ const UniversePage = () => {
   const handleTagFilter = (tag: string | null) => {
     setActiveTag(tag);
     if (tag) {
-      const filtered = galaxies.filter(galaxy => galaxy.tags.includes(tag));
+      const filtered = galaxies.filter((galaxy: { tags: string | any[]; }) => galaxy.tags.includes(tag));
       setFilteredGalaxies(filtered);
     } else {
       setFilteredGalaxies(galaxies);
@@ -140,8 +93,8 @@ const UniversePage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredGalaxies.map(galaxy => (
-            <GalaxyCard key={galaxy._id} galaxy={galaxy} />
+          {filteredGalaxies.map((galaxy: { _id: React.Key | null | undefined; }) => (
+            <GalaxyCard key={galaxy._id} galaxy={galaxy as Galaxy} />
           ))}
         </div>
       </div>
@@ -149,4 +102,4 @@ const UniversePage = () => {
   );
 };
 
-export default UniversePage;
+export default withProtectedRoute(UniversePage);
