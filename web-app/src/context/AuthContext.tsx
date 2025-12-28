@@ -14,6 +14,11 @@ interface ProductItem {
   categories: string[];
 }
 
+interface Contact {
+  _id: string;
+  username: string;
+}
+
 interface User {
   _id: string; // Assuming user has an ID
   username: string;
@@ -26,10 +31,11 @@ interface User {
   website?: string;
   profilePicture?: string;
   rooms?: string[];
-  catalog?: ProductItem[]; // Assuming catalog is an array of any for now, can be refined later
+  catalog?: ProductItem[];
+  contacts?: Contact[];
 }
 
-interface AuthContextType {
+export interface AuthContextType {
   token: string | null;
   user: User | null;
   login: (newToken: string) => void;

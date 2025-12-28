@@ -110,10 +110,15 @@ const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
         setChat((prevChat) => [...prevChat, data]);
       });
 
+      socket.on('new_room', (newRoom: Room) => {
+        setNewlyCreatedRooms((prevRooms) => [...prevRooms, newRoom.name]);
+      });
+
       return () => {
         socket.off('connect');
         socket.off('load_history');
         socket.off('receive_message');
+        socket.off('new_room');
         socket.disconnect();
       };
     }

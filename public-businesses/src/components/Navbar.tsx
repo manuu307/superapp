@@ -79,10 +79,10 @@ const Navbar = () => {
               <BsChatDots className="mr-2" /> Store
             </Link>
             <Link href="/about" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
-              <BsPerson className="mr-2" /> Profile
+              <BsPerson className="mr-2" /> About Us
             </Link>
             <Link href="/contact" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
-              <BsBriefcase className="mr-2" /> Business
+              <BsBriefcase className="mr-2" /> Contact
             </Link>
           </div>
         </div>

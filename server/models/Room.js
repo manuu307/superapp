@@ -1,27 +1,42 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const RoomSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
     trim: true,
-    unique: true,
+  },
+  galaxy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Galaxy'
+  },
+  business: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Business'
+  },
+  admins: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  users: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  watchers: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  guests: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
   description: {
     type: String,
     trim: true,
   },
-  users: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
-  admins: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
   isPrivate: {
     type: Boolean,
-    default: false
+    default: true
   },
   tags: [{
     type: String,
@@ -35,6 +50,13 @@ const RoomSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+});
+
+RoomSchema.pre('save', function(next) {
+  if (!this.name) {
+    this.name = `chat-${uuidv4()}`;
+  }
+  next();
 });
 
 module.exports = mongoose.model('Room', RoomSchema);
