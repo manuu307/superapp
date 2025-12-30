@@ -1,0 +1,9 @@
+port: 7880
+log_level: info
+rtc:
+  port_range_start: 55000
+  port_range_end: 56000
+keys:
+    # replace with your own api key and secret
+    devkey: secret
+    # you can add more keys here
