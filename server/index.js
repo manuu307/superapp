@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors({ origin: '*' })); 
-app.get('/', (req, res) => res.send('Server is running'));
+app.get('/api/v1/', (req, res) => res.send('Server is running'));
 const userRoutes = require('./routes/users');
 app.use('/api/v1/users', userRoutes);
 const authRoutes = require('./routes/auth');
@@ -32,6 +32,8 @@ const galaxyRoutes = require('./routes/galaxies');
 app.use('/api/v1/galaxies', galaxyRoutes);
 const publicRoutes = require('./routes/public');
 app.use('/api/v1/public', publicRoutes);
+const videoRoutes = require('./routes/video');
+app.use('/api/v1/video', videoRoutes);
 
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');

@@ -43,6 +43,18 @@ services:
     networks:
       - chat-net
 
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: livekit_server
+    networks:
+      - chat-net
+    ports:
+      - "7880:7880"
+      - "55000-56000:55000-56000/udp"
+    volumes:
+      - ./livekit/livekit.yaml:/etc/livekit.yaml
+    command: --config /etc/livekit.yaml
+
   database:
     image: mongo:latest
     ports:

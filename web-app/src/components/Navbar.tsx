@@ -2,7 +2,7 @@
 import React, { useState, useContext } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { BsChatDots, BsPerson, BsBriefcase } from 'react-icons/bs';
+import { BsChatDots, BsPerson, BsBriefcase, BsStars } from 'react-icons/bs';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
@@ -47,6 +47,9 @@ const Navbar = () => {
             </Link>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
+                <Link href="/universe" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+                  <BsStars className="mr-2" /> Universe
+                </Link>
                 <Link href="/" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
                   <BsChatDots className="mr-2" /> Social
                 </Link>
@@ -55,9 +58,6 @@ const Navbar = () => {
                 </Link>
                 <Link href="/business" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
                   <BsBriefcase className="mr-2" /> Business
-                </Link>
-                <Link href="/universe" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
-                  <BsBriefcase className="mr-2" /> Universe
                 </Link>
               </div>
             </div>
@@ -81,6 +81,9 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <Link href="/universe" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+              <BsStars className="mr-2" /> Universe
+            </Link>
             <Link href="/" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
               <BsChatDots className="mr-2" /> Social
             </Link>
@@ -89,9 +92,6 @@ const Navbar = () => {
             </Link>
             <Link href="/business" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
               <BsBriefcase className="mr-2" /> Business
-            </Link>
-            <Link href="/universe" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
-              <BsBriefcase className="mr-2" /> Universe
             </Link>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-700">

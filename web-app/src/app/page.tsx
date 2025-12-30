@@ -1,5 +1,6 @@
 "use client";
-import React, { useContext } from 'react';
+import { useContext } from 'react';
+import { useRouter } from 'next/navigation';
 import { SocialContext, SocialProvider, type SocialContextType } from '../context/SocialContext';
 import CreateRoom from '../components/CreateRoom';
 import { AuthContext } from '../context/AuthContext';
@@ -17,6 +18,7 @@ interface AuthContextType {
 
 
 const Chat = () => {
+  const router = useRouter();
   const {
     room,
     setRoom,
@@ -49,8 +51,16 @@ const Chat = () => {
         </ul>
       </div>
       <div className="flex flex-col flex-1">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
           <h3 className="text-xl font-bold">{room}</h3>
+          {room && (
+            <button 
+              onClick={() => router.push(`/video/${room}`)} 
+              className="px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700"
+            >
+              Start Video Call
+            </button>
+          )}
         </div>
         <div className="flex-1 p-4 overflow-y-auto">
           {chat.map((msg: Message, index: number) => (
