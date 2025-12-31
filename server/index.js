@@ -34,6 +34,8 @@ const publicRoutes = require('./routes/public');
 app.use('/api/v1/public', publicRoutes);
 const videoRoutes = require('./routes/video');
 app.use('/api/v1/video', videoRoutes);
+const economyRoutes = require('./routes/economy');
+app.use('/api/v1/economy', economyRoutes);
 
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');

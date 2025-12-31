@@ -184,4 +184,17 @@ router.delete('/catalog/:itemId', auth, async (req, res) => {
   }
 });
 
+const EnergyFlow = require('../models/EnergyFlow');
+
+// GET energy flow history for the user
+router.get('/energy-flow', auth, async (req, res) => {
+  try {
+    const history = await EnergyFlow.find({ user: req.user.id }).sort({ createdAt: -1 });
+    res.json(history);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;

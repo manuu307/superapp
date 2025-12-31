@@ -33,6 +33,11 @@ interface User {
   rooms?: string[];
   catalog?: ProductItem[];
   contacts?: Contact[];
+  battery?: {
+    lumens: number;
+    rays: number;
+    flares: number;
+  };
 }
 
 export interface AuthContextType {

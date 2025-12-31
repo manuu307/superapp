@@ -50,7 +50,7 @@ services:
       - chat-net
     ports:
       - "7880:7880"
-      - "55000-56000:55000-56000/udp"
+      - "55000-55005:55000-55005/udp"
     volumes:
       - ./livekit/livekit.yaml:/etc/livekit.yaml
     command: --config /etc/livekit.yaml
