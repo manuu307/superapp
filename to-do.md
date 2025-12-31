@@ -1,1 +1,85 @@
-Act as a Senior Full-Stack Engineer. I need to integrate a scalable Video Calling feature into my existing SuperApp.CURRENT STACKBackend: Node.js (Express)Frontend: Next.js (React)Infrastructure: Docker Compose with Nginx, Redis, and MongoDBService Discovery: Docker network 'chat-net'OBJECTIVEImplement a scalable video conferencing solution using LiveKit (SFU architecture).TASKSINFRASTRUCTURE (docker-compose.yml):Add a 'livekit' service using 'livekit/livekit-server:latest'.Configure it to use the 'chat-net' network.Expose port 7880 (API) and the UDP range 50000-60000 for media.Create a 'livekit.yaml' config file template with API Key/Secret placeholders.BACKEND TOKEN SERVICE (Node.js):Create an API route in the existing Node.js server (server/index.js) at 'POST /api/video/token'.Use 'livekit-server-sdk' to generate an Access Token.The route should accept 'roomName' and 'participantName' from the request body.Implement security: ensure the user is authenticated (via session/JWT) before issuing a token.FRONTEND UI (Next.js):Create a new component 'VideoConferenceRoom.jsx' using '@livekit/components-react'.Implement a 'Join Call' interface that triggers the token request.Use the 'LiveKitRoom' and 'VideoConference' components to handle the media layout.Include a 'Leave' button that cleans up the connection.INTEGRATION:Add a 'Start Video Call' button to the existing 'ChatInterface.tsx'.When clicked, it should navigate to the video room or open a modal with the video conference.CONSTRAINTSThe solution must be scalable via SFU (no Peer-to-Peer bottlenecks).Must handle mobile responsiveness for users on data plans (Simulcast).All communication between Next.js and LiveKit must be authenticated via the Node.js backend.
+Solar Grid: Distributed Node Specification
+
+1. Concept Overview
+
+The Solar Grid is a decentralized infrastructure layer for the SolarApp Nexus. It allows community members (Volunteers) to contribute their idle computing resources (CPU, RAM, and Bandwidth) to the network. In exchange for processing application tasks, users earn Lumens (ln), the primary energy unit of the Solarpunk economy.
+
+2. Technical Architecture
+
+A. The Relay Client (relay.js)
+
+A lightweight, headless Node.js application running on the user's local machine.
+
+Tunnelling: Uses localtunnel to create a public URL (e.g., https://active-node-99.loca.lt) without requiring port forwarding.
+
+Connection: Establishes a persistent WebSocket connection to the central API cluster.
+
+Authentication: Authenticates via a unique NodeKey linked to the user's userId.
+
+B. The Central Grid Controller
+
+A service running within the main Docker cluster that manages the volunteer pool.
+
+Node Registry: A Redis-backed list of active nodeUrls and their current latency/health status.
+
+Task Dispatcher: A load-balancing logic that selects an available volunteer node to handle specific "Read-Only" or "Data-Processing" tasks.
+
+3. Reward Mechanism: Proof of Contribution (PoC)
+
+Instead of energy-intensive mining, the Solar Grid uses a task-based reward system.
+
+Assignment: The Grid Controller sends a TASK_REQUEST (e.g., "Filter this business list" or "Generate search thumbnails").
+
+Execution: The local node processes the data.
+
+Receipt: The node returns the TASK_RESULT along with metadata (processing time, CPU cycles).
+
+Verification: The Central API verifies the result.
+
+Minting: Upon successful verification, the backend executes a MongoDB transaction:
+
+db.users.updateOne(
+  { _id: userId },
+  { $inc: { "battery.lumens": 0.5 } } // Reward per task
+);
+
+
+4. Database & Security Protocol
+
+Data Isolation (Crucial)
+
+Volunteer nodes NEVER have direct access to the production MongoDB or Redis instances.
+
+Read Logic: Nodes receive the raw data they need to process within the WebSocket payload itself, or they fetch public data from a restricted CDN.
+
+Write Logic: Nodes have zero write permissions. All state changes (like balance updates) are performed by the central server after validating the node's work.
+
+Consensus Verification
+
+To prevent "Cheating" (nodes sending fake results to claim Lumens), the Grid Controller employs Consensus Check:
+
+High-priority tasks are sent to two different nodes simultaneously.
+
+If results match, both are rewarded.
+
+If results differ, the task is sent to a third "Authority Node" (central server), and the malicious/faulty node is flagged.
+
+5. User Experience (The Solarpunk UI)
+
+The "Solar Grid" tab in the SuperApp provides:
+
+Node Status: Real-time visualization of the local "Pulse."
+
+Harvest Stats: A live counter of Lumens earned during the current session.
+
+Impact Meter: Shows how much the user has helped the Uruguayan community by reducing central server load.
+
+6. Implementation Roadmap
+
+Phase 1: Develop the relay.js client with localtunnel integration.
+
+Phase 2: Implement the Socket.io register_node logic in the main backend.
+
+Phase 3: Create the "Consensus Engine" for task validation.
+
+Phase 4: Release the "One-Click Join" UI in the Next.js dashboard.
