@@ -142,3 +142,6 @@ To run the backend independently (for development purposes, outside of Docker Co
    npm start
    ```
 The backend will typically run on `http://localhost:5000` (or as configured).
+
+
+db.users.updateOne({"username": "Andu"},{$inc:{"battery.lumens": 1000}})
