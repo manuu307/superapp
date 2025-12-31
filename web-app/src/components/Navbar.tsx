@@ -2,7 +2,7 @@
 import React, { useState, useContext } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { BsChatDots, BsPerson, BsBriefcase, BsStars } from 'react-icons/bs';
+import { BsChatDots, BsPerson, BsBriefcase, BsStars, BsBatteryCharging } from 'react-icons/bs';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
@@ -59,6 +59,9 @@ const Navbar = () => {
                 <Link href="/business" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
                   <BsBriefcase className="mr-2" /> Business
                 </Link>
+                <Link href="/battery" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+                  <BsBatteryCharging className="mr-2" /> Battery
+                </Link>
               </div>
             </div>
           </div>
@@ -92,6 +95,9 @@ const Navbar = () => {
             </Link>
             <Link href="/business" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
               <BsBriefcase className="mr-2" /> Business
+            </Link>
+            <Link href="/battery" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+              <BsBatteryCharging className="mr-2" /> Battery
             </Link>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-700">

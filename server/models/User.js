@@ -84,7 +84,26 @@ const UserSchema = new mongoose.Schema({
       enum: ['image', 'video'],
       required: true
     }
-  }]
+  }],
+  battery: {
+    lumens: {
+      type: Number,
+      default: 0
+    },
+    rays: {
+      type: Number,
+      default: 0
+    },
+    flares: {
+      type: Number,
+      default: 0
+    }
+  },
+  sparkStatus: {
+    type: String,
+    enum: ['Active', 'Dim', 'Extinguished'],
+    default: 'Active'
+  }
 });
 
 // Hash password before saving

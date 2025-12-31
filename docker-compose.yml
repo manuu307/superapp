@@ -5,7 +5,7 @@ services:
   backend:
     build: ./server
     environment:
-      - MONGO_URI=mongodb://database:27017/chat
+      - MONGO_URI=mongodb://database:27017/chat?replicaSet=rs0
       - REDIS_HOST=message_broker
       - REDIS_PORT=6379
       - JWT_SECRET=your-super-secret-key
@@ -18,7 +18,7 @@ services:
     networks:
       - chat-net
     depends_on:
-      - database
+      - mongo-setup
       - message_broker
       - minio
 
@@ -50,7 +50,7 @@ services:
       - chat-net
     ports:
       - "7880:7880"
-      - "55000-56000:55000-56000/udp"
+      - "55000-55005:55000-55005/udp"
     volumes:
       - ./livekit/livekit.yaml:/etc/livekit.yaml
     command: --config /etc/livekit.yaml
@@ -63,6 +63,38 @@ services:
       - mongo-data:/data/db
     networks:
       - chat-net
+    command: mongod --replSet rs0 --bind_ip_all
+
+  mongo-setup:
+    image: mongo:latest
+    restart: "no"
+    networks:
+      - chat-net
+    depends_on:
+      - database
+    command: >
+      bash -c "
+        echo 'Waiting for MongoDB to start...';
+        sleep 5;
+        mongosh --host database --eval '
+          try {
+            rs.status();
+            print(\"Replica set already initialized\");
+          } catch (err) {
+            if (err.message.includes(\"no replset config has been received\")) {
+              print(\"Initiating replica set...\");
+              rs.initiate({
+                _id: \"rs0\",
+                members: [ { _id: 0, host: \"database:27017\" } ]
+              });
+              print(\"Replica set initiated\");
+            } else {
+              print(\"Error during replica set initialization:\", err.message);
+              throw err;
+            }
+          }
+        '
+      "
 
   message_broker:
     image: redis:latest
