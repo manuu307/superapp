@@ -99,6 +99,22 @@ const UserSchema = new mongoose.Schema({
       default: 0
     }
   },
+  spark: {
+    type: Number,
+    default: 0
+  },
+  skills: {
+    type: [String],
+    default: []
+  },
+  neighborhood: {
+    type: String,
+    trim: true
+  },
+  overChargeMode: {
+    type: Boolean,
+    default: false
+  },
   sparkStatus: {
     type: String,
     enum: ['Active', 'Dim', 'Extinguished'],
