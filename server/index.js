@@ -37,6 +37,9 @@ app.use('/api/v1/video', videoRoutes);
 const economyRoutes = require('./routes/economy');
 app.use('/api/v1/economy', economyRoutes);
 
+const circlesRoutes = require('./routes/circles');
+app.use('/api/v1/circles', circlesRoutes);
+
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./api-documentation.yaml');

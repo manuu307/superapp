@@ -1,9 +1,10 @@
-"use client"
+"use client";
 import React, { useState, useContext } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { BsChatDots, BsPerson, BsBriefcase, BsStars, BsBatteryCharging } from 'react-icons/bs';
+import { BsPerson, BsBriefcase, BsStars, BsBatteryCharging } from 'react-icons/bs';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
+import { Circle } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 
@@ -50,8 +51,8 @@ const Navbar = () => {
                 <Link href="/universe" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
                   <BsStars className="mr-2" /> Universe
                 </Link>
-                <Link href="/" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
-                  <BsChatDots className="mr-2" /> Social
+                <Link href="/social" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+                  <Circle className="mr-2 w-4 h-4" /> Circles
                 </Link>
                 <Link href="/profile" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
                   <BsPerson className="mr-2" /> Profile
@@ -87,8 +88,8 @@ const Navbar = () => {
             <Link href="/universe" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
               <BsStars className="mr-2" /> Universe
             </Link>
-            <Link href="/" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
-              <BsChatDots className="mr-2" /> Social
+            <Link href="/social" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+              <Circle className="mr-2 w-4 h-4" /> Circles
             </Link>
             <Link href="/profile" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
               <BsPerson className="mr-2" /> Profile
