@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { BsPerson, BsBriefcase, BsStars, BsBatteryCharging } from 'react-icons/bs';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
+import { BiMap } from 'react-icons/bi';
 import { Circle } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
@@ -54,6 +55,9 @@ const Navbar = () => {
                 <Link href="/social" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
                   <Circle className="mr-2 w-4 h-4" /> Circles
                 </Link>
+                <Link href="/nearby" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+                  <BiMap className="mr-2" /> Nearby
+                </Link>
                 <Link href="/profile" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
                   <BsPerson className="mr-2" /> Profile
                 </Link>
@@ -90,6 +94,9 @@ const Navbar = () => {
             </Link>
             <Link href="/social" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
               <Circle className="mr-2 w-4 h-4" /> Circles
+            </Link>
+            <Link href="/nearby" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+              <BiMap className="mr-2" /> Nearby
             </Link>
             <Link href="/profile" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
               <BsPerson className="mr-2" /> Profile

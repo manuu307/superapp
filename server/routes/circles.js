@@ -5,6 +5,12 @@ const auth = require('../middleware/auth');
 const Circle = require('../models/Circle');
 const User = require('../models/User');
 
+const { getNearbyEntities } = require('../controllers/circles');
+
+// GET /api/v1/circles/nearby
+// Get nearby circles and public events
+router.get('/nearby', getNearbyEntities);
+
 // GET /api/v1/circles
 // Get all circles
 router.get('/', auth, async (req, res) => {
