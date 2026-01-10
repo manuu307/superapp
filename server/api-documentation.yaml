@@ -20,7 +20,101 @@ tags:
     description: User management endpoints
   - name: Public
     description: Public endpoints
+  - name: Music
+    description: Music marketplace endpoints
 paths:
+  /music/upload:
+    post:
+      tags:
+        - Music
+      summary: Upload a music file
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                title:
+                  type: string
+                priceEnergy:
+                  type: number
+                duration:
+                  type: integer
+                isPublic:
+                  type: boolean
+      responses:
+        "200":
+          description: Music track uploaded successfully
+  /music/marketplace:
+    get:
+      tags:
+        - Music
+      summary: Get all public music tracks
+      responses:
+        "200":
+          description: A list of public music tracks
+  /music/{id}/preview:
+    get:
+      tags:
+        - Music
+      summary: Get a preview URL for a music track
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A presigned URL for the music track preview
+  /music/{id}/buy:
+    post:
+      tags:
+        - Music
+      summary: Buy a music track
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Music track purchased successfully
+  /music/library:
+    get:
+      tags:
+        - Music
+      summary: Get the user's purchased music tracks
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: A list of the user's purchased music tracks
+  /music/{id}/stream:
+    get:
+      tags:
+        - Music
+      summary: Get a stream URL for a purchased music track
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A presigned URL for the music track
   /auth/register:
     post:
       tags:

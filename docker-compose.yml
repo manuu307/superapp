@@ -9,7 +9,7 @@ services:
       - REDIS_HOST=message_broker
       - REDIS_PORT=6379
       - JWT_SECRET=your-super-secret-key
-      - MINIO_ENDPOINT=minio
+      - MINIO_ENDPOINT=192.168.1.10
       - MINIO_PORT=9000
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
