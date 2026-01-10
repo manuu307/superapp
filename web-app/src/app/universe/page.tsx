@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect, useContext } from 'react';
-import { AuthContext, AuthContextType } from '@/context/AuthContext';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import GalaxyCard from '@/components/GalaxyCard';
-import { ThemeContext }from '@/context/ThemeContext';
 import { withProtectedRoute } from '../withProtectedRoute';
 
 interface Galaxy {
@@ -15,18 +14,10 @@ interface Galaxy {
 }
 
 const UniversePage = () => {
-  const authContext = useContext(AuthContext);
-  const themeContext = useContext(ThemeContext);
+  const { user, token } = useAuth();
 
-  if (!authContext || !themeContext) {
-    return <div>Loading...</div>;
-  }
-
-  const { user, token } = authContext;
-  const { theme } = themeContext;
-  
-  const [galaxies, setGalaxies] = useState([]);
-  const [filteredGalaxies, setFilteredGalaxies] = useState([]);
+  const [galaxies, setGalaxies] = useState<Galaxy[]>([]);
+  const [filteredGalaxies, setFilteredGalaxies] = useState<Galaxy[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
@@ -60,7 +51,7 @@ const UniversePage = () => {
   const handleTagFilter = (tag: string | null) => {
     setActiveTag(tag);
     if (tag) {
-      const filtered = galaxies.filter((galaxy: { tags: string | any[]; }) => galaxy.tags.includes(tag));
+      const filtered = galaxies.filter((galaxy) => galaxy.tags.includes(tag));
       setFilteredGalaxies(filtered);
     } else {
       setFilteredGalaxies(galaxies);
@@ -68,14 +59,14 @@ const UniversePage = () => {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'}`}>
-      <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-4">Universe</h1>
+    <div className="bg-slate-900 min-h-screen text-white p-4 sm:p-6 md:p-8">
+      <div className="container mx-auto">
+        <h1 className="text-4xl font-bold mb-8 text-blue-300">Universe</h1>
         
-        <div className="mb-4">
+        <div className="mb-8">
           <button 
             onClick={() => handleTagFilter(null)}
-            className={`mr-2 mb-2 px-4 py-2 rounded-full text-sm font-semibold ${activeTag === null ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+            className={`mr-2 mb-2 px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-300 ${activeTag === null ? 'bg-blue-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-slate-300'}`}
           >
             All
           </button>
@@ -83,16 +74,16 @@ const UniversePage = () => {
             <button 
               key={tag}
               onClick={() => handleTagFilter(tag)}
-              className={`mr-2 mb-2 px-4 py-2 rounded-full text-sm font-semibold ${activeTag === tag ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+              className={`mr-2 mb-2 px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-300 ${activeTag === tag ? 'bg-blue-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-slate-300'}`}
             >
               {tag}
             </button>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredGalaxies.map((galaxy: { _id: React.Key | null | undefined; }) => (
-            <GalaxyCard key={galaxy._id} galaxy={galaxy as Galaxy} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredGalaxies.map((galaxy) => (
+            <GalaxyCard key={galaxy._id} galaxy={galaxy} />
           ))}
         </div>
       </div>

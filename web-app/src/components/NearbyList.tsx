@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useCallback } from 'react';
+import { MapPin, Search, Sun, Wind } from 'lucide-react';
 
 // Define the structure of a nearby entity based on the backend response
 interface NearbyEntity {
@@ -64,79 +65,85 @@ const NearbyList = () => {
   }, [radius]);
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow">
-        <div className="flex-grow w-full sm:w-auto">
-          <label htmlFor="radius-slider" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Search Radius: {radius} km
-          </label>
-          <input
-            id="radius-slider"
-            type="range"
-            min="1"
-            max="100"
-            value={radius}
-            onChange={(e) => setRadius(parseInt(e.target.value, 10))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-          />
+    <div className="bg-slate-900 min-h-screen text-white p-4 sm:p-6 md:p-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-8 p-6 bg-slate-800/50 rounded-xl shadow-lg">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex-grow w-full">
+              <label htmlFor="radius-slider" className="block text-sm font-medium text-slate-300 mb-2">
+                Search Radius: <span className="font-bold text-blue-300">{radius} km</span>
+              </label>
+              <input
+                id="radius-slider"
+                type="range"
+                min="1"
+                max="100"
+                value={radius}
+                onChange={(e) => setRadius(parseInt(e.target.value, 10))}
+                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer range-thumb-blue"
+              />
+            </div>
+            <button
+              onClick={findNearby}
+              disabled={loading}
+              className="w-full sm:w-auto flex items-center justify-center px-6 py-3 font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors duration-300"
+            >
+              <Search className="w-5 h-5 mr-2"/>
+              {loading ? 'Searching...' : "Find Near Me"}
+            </button>
+          </div>
         </div>
-        <button
-          onClick={findNearby}
-          disabled={loading}
-          className="w-full sm:w-auto px-6 py-3 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
-        >
-          {loading ? 'Searching...' : "Find Near Me"}
-        </button>
-      </div>
 
-      {error && (
-        <div className="text-center p-4 mb-4 text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800">
-          <strong>Error:</strong> {error}
-        </div>
-      )}
+        {error && (
+          <div className="text-center p-4 mb-4 text-red-300 bg-red-900/50 border border-red-500 rounded-lg">
+            <strong>Error:</strong> {error}
+          </div>
+        )}
 
-      {loading && (
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2">Fetching your location and searching...</p>
-        </div>
-      )}
+        {loading && (
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto"></div>
+            <p className="mt-4 text-slate-400">Fetching your location and searching...</p>
+          </div>
+        )}
 
-      {!loading && !error && entities.length === 0 && (
-        <div className="text-center text-gray-500 dark:text-gray-400">
-          <p>Click "Find Near Me" to discover what's around you.</p>
-        </div>
-      )}
+        {!loading && !error && entities.length === 0 && (
+          <div className="text-center text-slate-500 p-8 bg-slate-800/50 rounded-xl">
+            <MapPin className="w-16 h-16 mx-auto mb-4 text-slate-600"/>
+            <p>Click "Find Near Me" to discover what's around you.</p>
+          </div>
+        )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {entities.map((entity) => (
-          <div key={entity._id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300">
-            <div className="p-5">
-              <div className="flex items-center mb-4">
-                <img
-                  src={entity.profilePicture || 'https://via.placeholder.com/50'}
-                  alt={entity.name}
-                  className="w-12 h-12 rounded-full mr-4 object-cover"
-                />
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white truncate">{entity.name}</h3>
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="font-semibold text-gray-600 dark:text-gray-300">Distance:</span>
-                  <span className="font-mono px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-md">{entity.dist.calculated.toFixed(2)} km</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {entities.map((entity) => (
+            <div key={entity._id} className="bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-1">
+              <div className="p-5">
+                <div className="flex items-center mb-4">
+                  <img
+                    src={entity.profilePicture || 'https://i.pravatar.cc/150?u=' + entity._id}
+                    alt={entity.name}
+                    className="w-12 h-12 rounded-full mr-4 object-cover border-2 border-slate-700"
+                  />
+                  <h3 className="text-xl font-bold text-blue-300 truncate">{entity.name}</h3>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-semibold text-gray-600 dark:text-gray-300">Energy Rank:</span>
-                  <span className="font-mono px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-md">{entity.score.toFixed(2)}</span>
-                </div>
-                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-600 dark:text-gray-300">Energy Balance:</span>
-                  <span className="font-mono px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-md">{entity.energyBalance}</span>
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-slate-400 flex items-center"><MapPin className="w-4 h-4 mr-2"/>Distance:</span>
+                    <span className="font-mono px-2 py-1 bg-slate-700 text-slate-300 rounded-md">{entity.dist.calculated.toFixed(2)} km</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-slate-400 flex items-center"><Sun className="w-4 h-4 mr-2"/>Energy Rank:</span>
+                    <span className="font-mono px-2 py-1 bg-blue-900/50 text-blue-300 rounded-md">{entity.score.toFixed(2)}</span>
+                  </div>
+                   <div className="flex items-center justify-between">
+                    <span className="font-semibold text-slate-400 flex items-center"><Wind className="w-4 h-4 mr-2"/>Energy Balance:</span>
+                    <span className="font-mono px-2 py-1 bg-green-900/50 text-green-300 rounded-md">{entity.energyBalance}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

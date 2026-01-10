@@ -159,7 +159,7 @@ const ProfileSidebar = () => {
   }
 
   return (
-    <div className="w-1/4 p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+    <div className="flex-1 p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
       <div className="text-center">
         <img
           src={user.profilePicture || 'https://via.placeholder.com/150'}
