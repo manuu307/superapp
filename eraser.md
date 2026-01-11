@@ -190,3 +190,365 @@ Phase 2 (The Energy Engine): Implementation of the ranking algorithm and real-ti
 Phase 3 (Frontend/UI): Development of the interactive map and discovery feed (Current Status).
 Phase 4 (Expansion): Integration of social features (comments/media) within Circles.
 Document Version: 2.0 (Full Project Comprehensive)
+
+
+----------
+
+
+You are a senior full-stack engineer working on an existing platform with:
+
+- Node.js + Express
+- MongoDB
+- JWT authentication
+- A Next.js frontend
+- Existing user profiles (to be renamed to "Me")
+
+Your task is to START IMPLEMENTING a new feature called
+**Personal State Tracking**, accessible from a section called **“Me”**.
+
+This feature allows users to track their physical and emotional states
+over time in a simple, non-medical, private-by-default way.
+
+================================
+CORE CONCEPT
+================================
+
+A "State" represents how a user feels at a specific moment in time.
+
+This is NOT a medical or diagnostic feature.
+Do NOT introduce scoring, AI interpretation, or advice.
+
+Focus on:
+- Self-observation
+- Patterns over time
+- Visual clarity
+- Privacy
+
+================================
+STATE ENTRY REQUIREMENTS
+================================
+
+Each State entry MUST include:
+
+1. Timestamp (automatic)
+2. ONE primary emotion represented by a COLOR (mandatory)
+3. Optional descriptive WORD TAGS (multiple allowed)
+4. Optional short free-text description
+5. Visibility level (private by default)
+
+================================
+COLOR SYSTEM (MANDATORY)
+================================
+
+User must select EXACTLY ONE color.
+
+Suggested fixed color set (can be constants):
+
+- red    → anger / frustration
+- blue   → sadness / low
+- yellow → joy / energy
+- green  → calm / balance
+- purple → creativity / reflection
+- black  → exhaustion / overload
+- white  → neutral / empty
+
+Colors are symbolic, not diagnostic.
+
+================================
+WORD TAGS (OPTIONAL)
+================================
+
+Users may select zero or more tags, such as:
+
+- angriness
+- sadness
+- sickness
+- creativity
+- motivation
+- energy
+- anxiety
+- calm
+- focus
+- confusion
+
+These are descriptive, not evaluative.
+
+================================
+VISIBILITY
+================================
+
+Each state entry has a visibility field:
+
+- "private" (default)
+- "shared" (with specific users)
+- "public"
+
+Do NOT make states public by default.
+
+================================
+DATA MODELS (REQUIRED)
+================================
+
+Design MongoDB schemas for:
+
+1. UserState
+- id
+- userId
+- color
+- tags []
+- description
+- visibility
+- createdAt
+
+Optional:
+- sharedWith [userId]
+
+================================
+API ENDPOINTS (REQUIRED)
+================================
+
+Implement (or scaffold):
+
+- POST   /api/v1/me/state        → create a state entry
+- GET    /api/v1/me/states       → list user states (filter by date range)
+- GET    /api/v1/me/stats        → aggregated data for charts
+- PATCH  /api/v1/me/state/:id   → update visibility
+- DELETE /api/v1/me/state/:id   → delete entry
+
+All endpoints MUST be JWT-protected.
+
+================================
+AGGREGATION & ANALYTICS
+================================
+
+Implement basic aggregation queries for:
+
+1. Weekly / Monthly / Yearly views
+2. Color distribution over time
+3. Positive vs Negative balance
+
+Define:
+- Positive colors: yellow, green, purple
+- Negative colors: red, blue, black
+- Neutral: white
+
+Return data in a frontend-friendly format
+(no charting library code required).
+
+================================
+FRONTEND (BASIC SCAFFOLD)
+================================
+
+- Rename "Profile" section to "Me"
+- Inside "Me" section, Add:
+  - Simple state entry form
+  - Color selector (single choice)
+  - Tag selector (multi-choice)
+  - Optional text input
+- Add placeholder views for:
+  - Weekly view
+  - Monthly view
+  - Yearly view
+
+Do NOT over-design UI.
+Focus on structure and data flow.
+
+================================
+DELIVERABLES
+================================
+
+1. MongoDB schema(s)
+2. Express routes + controllers
+3. Aggregation logic
+4. Minimal frontend scaffolding
+5. Inline comments explaining design choices
+
+================================
+IMPORTANT
+================================
+
+- Privacy first
+- Simplicity over features
+- Assume future integration with:
+  - Lumen (energy)
+  - Omni (location aggregation)
+  - Social sharing
+
+Start with a clean MVP and begin implementation now.
+
+-------------
+
+You are a senior full-stack engineer working on an existing feature called
+**Personal State Tracking** (“Me” section), already implemented and working.
+
+Current behavior:
+- User selects EXACTLY ONE color to represent their state
+- Colors have a single, fixed symbolic meaning
+
+Your task is to IMPLEMENT A NEW CONCEPT called **Polarity**
+that modifies the meaning of the selected color.
+
+================================
+NEW CONCEPT: POLARITY
+================================
+
+Each state entry must now include a POLARITY value:
+
+- "+"  → positive expression of the color
+- "-"  → negative expression of the color
+
+Polarity is REQUIRED and selected explicitly by the user.
+
+This does NOT change the color itself,
+only how the color is interpreted.
+
+================================
+SEMANTIC MODEL (IMPORTANT)
+================================
+
+Colors are ambiguous by nature.
+Polarity disambiguates meaning.
+
+Example:
+
+RED color meanings:
+- Positive (+): passion, love, desire, vitality
+- Negative (-): anger, danger, conflict, war
+
+Other examples (illustrative, not medical):
+
+BLUE
+- + : serenity, depth, introspection
+- - : sadness, heaviness, loneliness
+
+YELLOW
+- + : joy, optimism, energy
+- - : anxiety, restlessness, overload
+
+GREEN
+- + : calm, balance, growth
+- - : stagnation, envy, emotional flatness
+
+PURPLE
+- + : creativity, imagination, reflection
+- - : confusion, dissociation, mental fog
+
+BLACK
+- + : rest, silence, withdrawal, protection
+- - : exhaustion, burnout, overwhelm
+
+WHITE
+- + : clarity, openness, neutrality
+- - : emptiness, numbness, detachment
+
+Do NOT hardcode meanings into logic.
+Meanings are conceptual, not programmatic.
+
+================================
+DATA MODEL CHANGE (REQUIRED)
+================================
+
+Extend the existing UserState schema:
+
+Add field:
+- polarity: "+" | "-"
+
+Existing states WITHOUT polarity must be handled gracefully:
+- Either default to null
+- Or default to "-" (document decision)
+
+Do NOT break existing data.
+
+================================
+API CHANGES
+================================
+
+Update relevant endpoints to:
+
+- Accept polarity on state creation
+- Return polarity in all state responses
+- Include polarity in aggregation queries
+
+Affected endpoints:
+- POST /api/v1/me/state
+- GET  /api/v1/me/states
+- GET  /api/v1/me/stats
+
+================================
+AGGREGATION LOGIC UPDATE
+================================
+
+Update analytics to consider polarity:
+
+1. Positive states:
+   - polarity "+"
+2. Negative states:
+   - polarity "-"
+
+Do NOT infer positivity from color anymore.
+Color and polarity are orthogonal.
+
+Charts should be able to show:
+- Positive vs Negative over time
+- Color distribution WITH polarity awareness
+
+================================
+FRONTEND UPDATE (REQUIRED)
+================================
+
+Update the state entry UI:
+
+- Add a polarity selector:
+  - Two options: "+" and "-"
+  - Mutually exclusive
+  - Required before saving
+
+UX guidelines:
+- Simple toggle or segmented control
+- No judgmental language
+- No icons like smiley/sad faces
+- Neutral wording (e.g. “Expression” or “Tone”)
+
+Ensure:
+- Color selection remains single-choice
+- Polarity selection is mandatory
+- Existing tags and description remain unchanged
+
+================================
+BACKWARD COMPATIBILITY
+================================
+
+- Existing saved states without polarity must still render
+- In UI, show them as:
+  - “unspecified”
+  - or default polarity (document choice)
+
+================================
+CONSTRAINTS
+================================
+
+- No medical interpretation
+- No AI inference
+- No automatic polarity assignment
+- User always chooses polarity explicitly
+
+================================
+DELIVERABLES
+================================
+
+1. Updated MongoDB schema
+2. Migration or fallback strategy for existing data
+3. Updated API controllers
+4. Updated aggregation logic
+5. Frontend UI changes
+6. Inline comments explaining semantic decisions
+
+================================
+IMPORTANT
+================================
+
+- This is a semantic refinement, not a new feature
+- Preserve simplicity and emotional safety
+- Do NOT introduce scoring or recommendations
+
+Begin implementation now.

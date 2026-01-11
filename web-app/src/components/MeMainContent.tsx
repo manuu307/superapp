@@ -3,8 +3,10 @@ import React, { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import UsersCatalog from './UsersCatalog';
 import { AuthContext, AuthContextType } from '../context/AuthContext';
+import StateHistory from './StateHistory';
+import StateEntryForm from './StateEntryForm';
 
-const ProfileMainContent = () => {
+const MeMainContent = () => {
   const { user, token, refetchUser } = useContext(AuthContext) as AuthContextType;
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -67,33 +69,35 @@ const ProfileMainContent = () => {
   return (
     <>
     <div className="flex-1 p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-      <div className="flex justify-between items-center mb-4">
-        <h4 className="text-xl font-bold">My Universe</h4>
-        <button 
-          onClick={() => router.push('/galaxy/new')}
-          className="px-4 py-2 font-bold text-white bg-green-500 rounded-md hover:bg-green-700"
-        >
-          + Create New Universe
-        </button>
-      </div>
-      <div>
-        <h4 className="mb-2 text-xl font-bold">Rooms</h4>
-        <ul className="space-y-2">
-          {user.rooms && user.rooms.map((room: string) => <li key={room} className="p-2 bg-gray-200 rounded-md dark:bg-gray-700">{room}</li>)}
-        </ul>
-      </div>
-      <UsersCatalog />
+      <StateEntryForm />
+      <StateHistory />
     </div>
-        <div className="flex-1 p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <h4 className="mb-2 text-xl font-bold">Contacts</h4>
-        <ul className="space-y-2">
-          {user.contacts && user.contacts.map((contact) => (
-            <li key={contact._id} className="flex items-center justify-between p-2 bg-gray-200 rounded-md dark:bg-gray-700">
-              <span>{contact.username}</span>
-              <button onClick={() => removeContact(contact._id)} className="px-3 py-1 font-bold text-white bg-red-500 rounded-md hover:bg-red-700">Remove</button>
-            </li>
-          ))}
-        </ul>
+        <div className="p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+          <div className="flex justify-between items-center mb-4">
+            <h4 className="text-xl font-bold">My Universe</h4>
+            <button 
+              onClick={() => router.push('/galaxy/new')}
+              className="px-4 py-2 font-bold text-white bg-green-500 rounded-md hover:bg-green-700"
+            >
+              + Create New Universe
+            </button>
+          </div>
+          <UsersCatalog />
+          <div>
+            <h4 className="mb-2 text-xl font-bold">Rooms</h4>
+            <ul className="space-y-2">
+              {user.rooms && user.rooms.map((room: string) => <li key={room} className="p-2 bg-gray-200 rounded-md dark:bg-gray-700">{room}</li>)}
+            </ul>
+          </div>
+          <h4 className="mb-2 text-xl font-bold">Contacts</h4>
+          <ul className="space-y-2">
+            {user.contacts && user.contacts.map((contact) => (
+              <li key={contact._id} className="flex items-center justify-between p-2 bg-gray-200 rounded-md dark:bg-gray-700">
+                <span>{contact.username}</span>
+                <button onClick={() => removeContact(contact._id)} className="px-3 py-1 font-bold text-white bg-red-500 rounded-md hover:bg-red-700">Remove</button>
+              </li>
+            ))}
+          </ul>
         <div className="mt-4">
           <h5 className="mb-2 text-lg font-bold">Add Contact</h5>
           <form onSubmit={handleSearch} className="flex">
@@ -120,4 +124,4 @@ const ProfileMainContent = () => {
   );
 };
 
-export default ProfileMainContent;
+export default MeMainContent;

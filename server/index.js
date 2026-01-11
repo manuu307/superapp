@@ -24,6 +24,8 @@ const roomRoutes = require('./routes/rooms');
 app.use('/api/v1/rooms', roomRoutes);
 const fileRoutes = require('./routes/files');
 app.use('/api/v1/files', fileRoutes);
+const meRoutes = require('./routes/me');
+app.use('/api/v1/me', meRoutes);
 const businessRoutes = require('./routes/business');
 app.use('/api/v1/business', businessRoutes);
 const productRoutes = require('./routes/products');

@@ -28,7 +28,7 @@ interface FormDataState {
   website: string;
 }
 
-const ProfileSidebar = () => {
+const MeSidebar = () => {
   const { user, token, refetchUser } = useContext(AuthContext) as AuthContextType;
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormDataState>({
@@ -104,7 +104,7 @@ const ProfileSidebar = () => {
       });
 
       if (!updateRes.ok) {
-        throw new Error('Profile picture update failed');
+        throw new Error('Me picture update failed');
       }
 
       refetchUser();
@@ -113,7 +113,7 @@ const ProfileSidebar = () => {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('Failed to upload profile picture.');
+        setError('Failed to upload me picture.');
       }
     }
   };
@@ -149,7 +149,7 @@ const ProfileSidebar = () => {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('Failed to update profile.');
+        setError('Failed to update me.');
       }
     }
   };
@@ -163,7 +163,7 @@ const ProfileSidebar = () => {
       <div className="text-center">
         <img
           src={user.profilePicture || 'https://via.placeholder.com/150'}
-          alt="Profile"
+          alt="Me"
           width={128}
           height={128}
           className="object-cover w-32 h-32 mx-auto rounded-full cursor-pointer"
@@ -201,11 +201,11 @@ const ProfileSidebar = () => {
           <div className="flex py-2 flex-wrap gap-2">
             {user.tags && user.tags.map(tag => <span key={tag} className="px-2 py-1 text-sm text-white bg-blue-500 rounded-full">{tag}</span>)}
           </div>
-          <button onClick={() => setIsEditing(true)} className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Edit Profile</button>
+          <button onClick={() => setIsEditing(true)} className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Edit Me</button>
         </div>
       )}
     </div>
   );
 };
 
-export default ProfileSidebar;
+export default MeSidebar;

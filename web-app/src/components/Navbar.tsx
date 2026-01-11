@@ -71,7 +71,7 @@ const Navbar = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center">
-            <Link href="/profile">
+            <Link href="/me">
               <BsPerson className="w-6 h-6 mr-4" />
             </Link>
             <button onClick={toggleTheme} className="mr-4">
@@ -120,8 +120,8 @@ const Navbar = () => {
               </div>
             </div>
             <div className="mt-3 px-2 space-y-1">
-              <Link href="/profile" className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
-                Profile
+              <Link href="/me" className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
+                Me
               </Link>
               <button onClick={toggleTheme} className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
                 Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode

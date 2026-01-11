@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import ProfileSidebar from './ProfileSidebar';
-import ProfileMainContent from './ProfileMainContent';
+import MeSidebar from './MeSidebar';
+import MeMainContent from './MeMainContent';
 import { AuthContext } from '../context/AuthContext';
 
 interface User {
@@ -19,19 +19,19 @@ interface AuthContextType {
   // Add other AuthContext properties if they are used in this component
 }
 
-const Profile = () => {
+const Me = () => {
   const { user } = useContext(AuthContext) as AuthContextType;
 
   if (!user) {
-    return <div>Loading profile...</div>;
+    return <div>Loading me...</div>;
   }
 
   return (
     <div className="flex flex-col md:flex-row h-full p-4 space-y-4 md:space-y-0 md:space-x-4 bg-gray-100 dark:bg-gray-900">
-      <ProfileSidebar />
-      <ProfileMainContent />
+      <MeSidebar />
+      <MeMainContent />
     </div>
   );
 };
 
-export default Profile;
+export default Me;
