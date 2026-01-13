@@ -5,6 +5,7 @@ import { AuthContext, AuthContextType } from '../context/AuthContext';
 interface State {
   _id: string;
   color: string;
+  polarity?: '+' | '-';
   tags: string[];
   description: string;
   createdAt: string;
@@ -77,7 +78,7 @@ const StateHistory = () => {
               <h6 className="font-semibold">Color Distribution</h6>
               <ul>
                 {Object.entries(stats.colorDistribution).map(([color, count]) => (
-                  <li key={color} style={{ color }}>{color}: {count as any}</li>
+                  <li key={color}>{color}: {count as any}</li>
                 ))}
               </ul>
             </div>
@@ -85,7 +86,6 @@ const StateHistory = () => {
               <h6 className="font-semibold">Balance</h6>
               <p>Positive: {stats.balance.positive}</p>
               <p>Negative: {stats.balance.negative}</p>
-              <p>Neutral: {stats.balance.neutral}</p>
             </div>
           </div>
         </div>
@@ -95,9 +95,11 @@ const StateHistory = () => {
         {states.map(state => (
           <div key={state._id} className="p-3 bg-gray-100 dark:bg-gray-700 rounded-md">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-full" style={{ backgroundColor: state.color }}></div>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white" style={{ backgroundColor: state.color }}>
+                {state.polarity || ''}
+              </div>
               <div>
-                <p className="font-bold">{new Date(state.createdAt).toLocaleString()}</p>
+                <p className="font-bold">{new Date(state.createdAt).toLocaleString()} <span className="font-normal text-gray-500 dark:text-gray-400">{state.polarity ? '' : '(unspecified polarity)'}</span></p>
                 <p>{state.description}</p>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {state.tags.map(tag => (

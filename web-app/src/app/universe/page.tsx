@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import GalaxyCard from '@/components/GalaxyCard';
 import { withProtectedRoute } from '../withProtectedRoute';
+import { useRouter } from 'next/navigation';
 
 interface Galaxy {
   _id: string;
@@ -20,6 +21,7 @@ const UniversePage = () => {
   const [filteredGalaxies, setFilteredGalaxies] = useState<Galaxy[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchGalaxies = async () => {
@@ -62,6 +64,16 @@ const UniversePage = () => {
     <div className="bg-slate-900 min-h-screen text-white p-4 sm:p-6 md:p-8">
       <div className="container mx-auto">
         <h1 className="text-4xl font-bold mb-8 text-blue-300">Universe</h1>
+
+          <div className="flex justify-between items-center mb-4">
+            <h4 className="text-xl font-bold">My Universe</h4>
+            <button 
+              onClick={() => router.push('/galaxy/new')}
+              className="px-4 py-2 font-bold text-white bg-green-500 rounded-md hover:bg-green-700"
+            >
+              + Create New Universe
+            </button>
+          </div>
         
         <div className="mb-8">
           <button 

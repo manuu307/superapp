@@ -27,9 +27,16 @@ const Me = () => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-full p-4 space-y-4 md:space-y-0 md:space-x-4 bg-gray-100 dark:bg-gray-900">
-      <MeSidebar />
-      <MeMainContent />
+    <div className="flex p-4 flex-col gap-4 lg:flex-row">
+      {/* LEFT COLUMN */}
+      <div className="flex-1 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <MeSidebar />
+      </div>
+
+      {/* RIGHT COLUMN */}
+      <div className="flex-1 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <MeMainContent />
+      </div>
     </div>
   );
 };

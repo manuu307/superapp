@@ -2,7 +2,7 @@
 import React, { useState, useContext } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { BsPerson, BsBriefcase, BsStars, BsBatteryCharging, BsMoon, BsSun, BsMusicNote } from 'react-icons/bs';
+import { BsPerson, BsBriefcase, BsStars, BsBatteryCharging, BsMoon, BsSun, BsMusicNote, BsActivity } from 'react-icons/bs';
 import { AiOutlineMenu, AiOutlineClose, AiOutlinePoweroff } from 'react-icons/ai';
 import { BiMap } from 'react-icons/bi';
 import { Circle } from 'lucide-react';
@@ -64,6 +64,9 @@ const Navbar = () => {
                 <Link href="/battery" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
                   <BsBatteryCharging className="mr-2" /> Battery
                 </Link>
+                <Link href="/state" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+                  <BsActivity className="mr-2" /> State
+                </Link>
                 <Link href="/music" className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700">
                   <BsMusicNote className="mr-2" /> Music
                 </Link>
@@ -107,6 +110,9 @@ const Navbar = () => {
             </Link>
             <Link href="/battery" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
               <BsBatteryCharging className="mr-2" /> Battery
+            </Link>
+            <Link href="/state" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
+              <BsActivity className="mr-2" /> State
             </Link>
             <Link href="/music" className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">
               <BsMusicNote className="mr-2" /> Music

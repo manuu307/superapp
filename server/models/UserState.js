@@ -11,6 +11,12 @@ const UserStateSchema = new mongoose.Schema({
     required: true,
     enum: ['red', 'blue', 'yellow', 'green', 'purple', 'black', 'white'],
   },
+  polarity: {
+    type: String,
+    required: true,
+    enum: ['+', '-'],
+    default: '-',
+  },
   tags: {
     type: [String],
     default: [],

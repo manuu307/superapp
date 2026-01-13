@@ -8,10 +8,11 @@ const UserState = require('../models/UserState');
 // @access  Private
 router.post('/state', auth, async (req, res) => {
   try {
-    const { color, tags, description, visibility, sharedWith } = req.body;
+    const { color, polarity, tags, description, visibility, sharedWith } = req.body;
     const newState = new UserState({
       user: req.user.id,
       color,
+      polarity,
       tags,
       description,
       visibility,
@@ -64,32 +65,26 @@ router.get('/stats', auth, async (req, res) => {
       },
       {
         $group: {
-          _id: '$color',
+          _id: { color: '$color', polarity: '$polarity' },
           count: { $sum: 1 },
         },
       },
     ]);
 
     const colorDistribution = stats.reduce((acc, stat) => {
-      acc[stat._id] = stat.count;
+      const key = `${stat._id.color} (${stat._id.polarity})`;
+      acc[key] = stat.count;
       return acc;
     }, {});
 
-    const positiveColors = ['yellow', 'green', 'purple'];
-    const negativeColors = ['red', 'blue', 'black'];
-    const neutralColors = ['white'];
-
     let positive = 0;
     let negative = 0;
-    let neutral = 0;
 
     stats.forEach(stat => {
-      if (positiveColors.includes(stat._id)) {
+      if (stat._id.polarity === '+') {
         positive += stat.count;
-      } else if (negativeColors.includes(stat._id)) {
+      } else {
         negative += stat.count;
-      } else if (neutralColors.includes(stat._id)) {
-        neutral += stat.count;
       }
     });
 
@@ -98,7 +93,6 @@ router.get('/stats', auth, async (req, res) => {
       balance: {
         positive,
         negative,
-        neutral,
       },
     });
   } catch (err) {

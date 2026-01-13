@@ -20,6 +20,7 @@ const TAGS = [
 const StateEntryForm = () => {
   const { token } = useContext(AuthContext) as AuthContextType;
   const [selectedColor, setSelectedColor] = useState<string>('');
+  const [polarity, setPolarity] = useState<'+' | '-' | ''>('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [description, setDescription] = useState<string>('');
   const [visibility, setVisibility] = useState<'private' | 'shared' | 'public'>('private');
@@ -41,6 +42,10 @@ const StateEntryForm = () => {
       setError('Please select a color.');
       return;
     }
+    if (!polarity) {
+      setError('Please select a polarity.');
+      return;
+    }
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/me/state`, {
@@ -51,6 +56,7 @@ const StateEntryForm = () => {
         },
         body: JSON.stringify({
           color: selectedColor,
+          polarity,
           tags: selectedTags,
           description,
           visibility
@@ -65,6 +71,7 @@ const StateEntryForm = () => {
       setSuccess('State saved successfully!');
       // Reset form
       setSelectedColor('');
+      setPolarity('');
       setSelectedTags([]);
       setDescription('');
       setVisibility('private');
@@ -85,7 +92,27 @@ const StateEntryForm = () => {
         {success && <p className="text-green-500">{success}</p>}
 
         <div>
-          <label className="block mb-2 font-bold">Select a color that represents your state:</label>
+          <label className="block mb-2 font-bold">1. Define the Polarity:</label>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setPolarity('+')}
+              className={`px-4 py-2 rounded-md text-lg font-bold ${polarity === '+' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+            >
+              +
+            </button>
+            <button
+              type="button"
+              onClick={() => setPolarity('-')}
+              className={`px-4 py-2 rounded-md text-lg font-bold ${polarity === '-' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+            >
+              -
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label className="block mb-2 font-bold">2. Select a color that represents your state:</label>
           <div className="flex flex-wrap gap-2">
             {COLORS.map(({ name, label, color }) => (
               <button
@@ -93,15 +120,16 @@ const StateEntryForm = () => {
                 type="button"
                 onClick={() => setSelectedColor(name)}
                 className={`w-12 h-12 rounded-full border-4 ${selectedColor === name ? 'border-blue-500' : 'border-transparent'}`}
-                style={{ backgroundColor: color }}
-                title={label}
-              />
+                style={{ backgroundColor: color, color: name === 'white' ? 'black' : 'white' }}
+                // title={label}
+              >
+              </button>
             ))}
           </div>
         </div>
-
+        
         <div>
-          <label className="block mb-2 font-bold">Add some tags (optional):</label>
+          <label className="block mb-2 font-bold">3. Add some tags (optional):</label>
           <div className="flex flex-wrap gap-2">
             {TAGS.map(tag => (
               <button
@@ -121,7 +149,7 @@ const StateEntryForm = () => {
         </div>
 
         <div>
-          <label htmlFor="description" className="block mb-2 font-bold">Add a description (optional):</label>
+          <label htmlFor="description" className="block mb-2 font-bold">4. Add a description (optional):</label>
           <textarea
             id="description"
             value={description}
@@ -132,7 +160,7 @@ const StateEntryForm = () => {
         </div>
 
         <div>
-          <label htmlFor="visibility" className="block mb-2 font-bold">Visibility:</label>
+          <label htmlFor="visibility" className="block mb-2 font-bold">5. Visibility:</label>
           <select
             id="visibility"
             value={visibility}
