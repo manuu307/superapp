@@ -3,6 +3,12 @@ import React, { useState, useContext } from 'react';
 import UsersCatalog from './UsersCatalog';
 import { AuthContext, AuthContextType } from '../context/AuthContext';
 
+interface User {
+  username: string;
+  rooms: string[];
+  contacts: any[];
+}
+
 const MeMainContent = () => {
   const { user, token, refetchUser } = useContext(AuthContext) as AuthContextType;
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -64,25 +70,25 @@ const MeMainContent = () => {
 
   return (
     <>
-    <div className="flex-1 p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-       <div>
-            <h4 className="mb-2 text-xl font-bold">Rooms</h4>
-            <ul className="space-y-2">
-              {user.rooms && user.rooms.map((room: string) => <li key={room} className="p-2 bg-gray-200 rounded-md dark:bg-gray-700">{room}</li>)}
-            </ul>
-          </div>
-          <UsersCatalog />
-    </div>
-        <div className="p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-          <h4 className="mb-2 text-xl font-bold">Contacts</h4>
+      <div className="flex-1 p-4 space-y-4 rounded-lg shadow-md">
+        <div>
+          <h4 className="mb-2 text-xl font-bold">Rooms</h4>
           <ul className="space-y-2">
-            {user.contacts && user.contacts.map((contact) => (
-              <li key={contact._id} className="flex items-center justify-between p-2 bg-gray-200 rounded-md dark:bg-gray-700">
-                <span>{contact.username}</span>
-                <button onClick={() => removeContact(contact._id)} className="px-3 py-1 font-bold text-white bg-red-500 rounded-md hover:bg-red-700">Remove</button>
-              </li>
-            ))}
+            {user.rooms && user.rooms.map((room: string) => <li key={room} className="p-2 bg-gray-200 rounded-md dark:bg-gray-700">{room}</li>)}
           </ul>
+        </div>
+        <UsersCatalog />
+      </div>
+      <div className="p-4 space-y-4 rounded-lg shadow-md">
+        <h4 className="mb-2 text-xl font-bold">Contacts</h4>
+        <ul className="space-y-2">
+          {user.contacts && user.contacts.map((contact) => (
+            <li key={contact._id} className="flex items-center justify-between p-2 bg-gray-200 rounded-md dark:bg-gray-700">
+              <span>{contact.username}</span>
+              <button onClick={() => removeContact(contact._id)} className="px-3 py-1 font-bold text-white bg-red-500 rounded-md hover:bg-red-700">Remove</button>
+            </li>
+          ))}
+        </ul>
         <div className="mt-4">
           <h5 className="mb-2 text-lg font-bold">Add Contact</h5>
           <form onSubmit={handleSearch} className="flex">
@@ -105,7 +111,7 @@ const MeMainContent = () => {
           </ul>
         </div>
       </div>
-      </>
+    </>
   );
 };
 

@@ -25,6 +25,13 @@ const UserStateSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  media: {
+    type: {
+      type: String,
+      enum: ['image', 'gif'],
+    },
+    url: String,
+  },
   visibility: {
     type: String,
     default: 'private',

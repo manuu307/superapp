@@ -3,25 +3,41 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const UserState = require('../models/UserState');
 
+const { upload, uploadToMinio } = require('../middleware/file');
+
 // @route   POST api/v1/me/state
 // @desc    Create a state entry
 // @access  Private
-router.post('/state', auth, async (req, res) => {
+router.post('/state', [auth, upload.single('media')], async (req, res) => {
   try {
     const { color, polarity, tags, description, visibility, sharedWith } = req.body;
+    
+    let mediaData;
+    if (req.file) {
+      try {
+        mediaData = await uploadToMinio(req.file);
+      } catch (uploadError) {
+        return res.status(500).send(uploadError.message);
+      }
+    }
+
     const newState = new UserState({
       user: req.user.id,
       color,
       polarity,
-      tags,
+      tags: tags ? tags.split(',') : [],
       description,
       visibility,
-      sharedWith,
+      sharedWith: sharedWith ? sharedWith.split(',') : [],
+      media: mediaData,
     });
     const userState = await newState.save();
     res.json(userState);
   } catch (err) {
     console.error(err.message);
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ msg: err.message });
+    }
     res.status(500).send('Server Error');
   }
 });

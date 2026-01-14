@@ -27,15 +27,18 @@ const Me = () => {
   }
 
   return (
-    <div className="flex p-4 flex-col gap-4 lg:flex-row">
-      {/* LEFT COLUMN */}
-      <div className="flex-1 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <MeSidebar />
-      </div>
+    <div>
+      <h1 className="text-3xl font-bold p-4">Me</h1>
+      <div className="flex p-4 flex-col gap-4 lg:flex-row">
+        {/* LEFT COLUMN */}
+        <div className="flex-1 p-4 rounded-lg shadow-md">
+          <MeSidebar />
+        </div>
 
-      {/* RIGHT COLUMN */}
-      <div className="flex-1 p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <MeMainContent />
+        {/* RIGHT COLUMN */}
+        <div className="flex-1 p-4 rounded-lg shadow-md">
+          <MeMainContent />
+        </div>
       </div>
     </div>
   );

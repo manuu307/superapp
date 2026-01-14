@@ -26,6 +26,8 @@ const fileRoutes = require('./routes/files');
 app.use('/api/v1/files', fileRoutes);
 const meRoutes = require('./routes/me');
 app.use('/api/v1/me', meRoutes);
+const universeRoutes = require('./routes/universe');
+app.use('/api/v1/universe', universeRoutes);
 const businessRoutes = require('./routes/business');
 app.use('/api/v1/business', businessRoutes);
 const productRoutes = require('./routes/products');

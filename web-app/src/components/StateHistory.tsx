@@ -61,7 +61,7 @@ const StateHistory = () => {
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
-    <div className="p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800 mt-4">
+    <div className="p-4 space-y-4 rounded-lg shadow-md">
       <h4 className="text-xl font-bold">State History</h4>
       <div className="flex justify-end space-x-2 mb-4">
         <button onClick={() => setTimeRange('all')} className={`px-3 py-1 rounded-full text-sm font-medium ${timeRange === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>All Time</button>
