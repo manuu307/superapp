@@ -7,10 +7,10 @@ const upload = multer({
   storage: storage,
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
+    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('audio/')) {
       cb(null, true);
     } else {
-      cb(new Error('Invalid file type. Only images and GIFs are allowed.'), false);
+      cb(new Error('Invalid file type. Only images, GIFs and audio are allowed.'), false);
     }
   }
 });
@@ -70,9 +70,15 @@ const uploadToMinio = (file) => {
       }
       const publicEndpoint = process.env.MINIO_PUBLIC_ENDPOINT || process.env.MINIO_ENDPOINT;
       const fileUrl = `http://${publicEndpoint}:${process.env.MINIO_PORT}/${bucketName}/${fileName}`;
+      let type = 'image';
+      if (file.mimetype.startsWith('image/gif')) {
+        type = 'gif';
+      } else if (file.mimetype.startsWith('audio/')) {
+        type = 'audio';
+      }
       resolve({
         url: fileUrl,
-        type: file.mimetype.startsWith('image/gif') ? 'gif' : 'image'
+        type,
        });
     });
   });

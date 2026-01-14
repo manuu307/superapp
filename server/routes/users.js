@@ -13,6 +13,20 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+// GET user by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('-password');
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
 // Update user profile
 router.put('/profile', auth, async (req, res) => {
   try {
