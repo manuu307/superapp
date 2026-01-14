@@ -13,7 +13,7 @@ const EnergyFlowHistory = () => {
         const fetchHistory = async () => {
             try {
                 const response = await axios.get(`${API_URL}/users/energy-flow`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: { 'x-auth-token': `${token}` }
                 });
                 setHistory(response.data);
                 setLoading(false);

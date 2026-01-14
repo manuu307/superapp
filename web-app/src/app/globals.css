@@ -6,6 +6,10 @@
   themes: ["light", "dark"],
 }
 
+html, body {
+  @apply bg-gray-100 dark:bg-gray-900 text-black dark:text-white;
+}
+
 @keyframes energy-pulse {
   0%, 100% {
     box-shadow: 0 0 15px 5px rgba(59, 130, 246, 0.4);

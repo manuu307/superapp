@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef, useContext } from 'react';
+import Link from 'next/link';
 import { AuthContext } from '../context/AuthContext';
 
 interface User {
@@ -28,7 +29,7 @@ interface FormDataState {
   website: string;
 }
 
-const ProfileSidebar = () => {
+const MeSidebar = () => {
   const { user, token, refetchUser } = useContext(AuthContext) as AuthContextType;
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormDataState>({
@@ -104,7 +105,7 @@ const ProfileSidebar = () => {
       });
 
       if (!updateRes.ok) {
-        throw new Error('Profile picture update failed');
+        throw new Error('Me picture update failed');
       }
 
       refetchUser();
@@ -113,7 +114,7 @@ const ProfileSidebar = () => {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('Failed to upload profile picture.');
+        setError('Failed to upload me picture.');
       }
     }
   };
@@ -149,7 +150,7 @@ const ProfileSidebar = () => {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('Failed to update profile.');
+        setError('Failed to update me.');
       }
     }
   };
@@ -159,11 +160,11 @@ const ProfileSidebar = () => {
   }
 
   return (
-    <div className="w-1/4 p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
+    <div className="flex-1 p-4 space-y-4 rounded-lg shadow-md">
       <div className="text-center">
         <img
           src={user.profilePicture || 'https://via.placeholder.com/150'}
-          alt="Profile"
+          alt="Me"
           width={128}
           height={128}
           className="object-cover w-32 h-32 mx-auto rounded-full cursor-pointer"
@@ -178,7 +179,7 @@ const ProfileSidebar = () => {
         />
         {profilePictureFile && <button onClick={uploadProfilePicture} className="w-full px-4 py-2 mt-2 font-bold text-white bg-green-500 rounded-md hover:bg-green-700">Save Picture</button>}
       </div>
-      <h3 className="text-2xl font-bold text-center">{user.username}</h3>
+      <h3 className="text-2xl font-bold text-center bg-gray-200 dark:bg-gray-700 rounded-md py-2">{user.username}</h3>
       {isEditing ? (
         <form onSubmit={onSubmit} className="space-y-4">
           {error && <p className="text-red-500 text-center">{error}</p>}
@@ -193,19 +194,20 @@ const ProfileSidebar = () => {
         </form>
       ) : (
         <div className="space-y-2">
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Last Name:</strong> {user.lastname}</p>
-          <p><strong>Nickname:</strong> {user.nickname}</p>
-          <p><strong>Description:</strong> {user.description}</p>
-          <p><strong>Website:</strong> <a href={user.website} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{user.website}</a></p>
+          <div><strong>Name:</strong> {user.name}</div>
+          <div><strong>Last Name:</strong> {user.lastname}</div>
+          <div><strong>Nickname:</strong> {user.nickname}</div>
+          <div><strong>Description:</strong> {user.description}</div>
+          <div><strong>Website:</strong> <a href={user.website} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{user.website}</a></div>
           <div className="flex py-2 flex-wrap gap-2">
             {user.tags && user.tags.map(tag => <span key={tag} className="px-2 py-1 text-sm text-white bg-blue-500 rounded-full">{tag}</span>)}
           </div>
-          <button onClick={() => setIsEditing(true)} className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Edit Profile</button>
+          <button onClick={() => setIsEditing(true)} className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-700">Edit Me</button>
+          <Link href="/me/states" className="block w-full px-4 py-2 mt-2 font-bold text-center text-white bg-green-500 rounded-md hover:bg-green-700">My States</Link>
         </div>
       )}
     </div>
   );
 };
 
-export default ProfileSidebar;
+export default MeSidebar;

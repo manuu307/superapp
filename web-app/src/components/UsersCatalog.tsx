@@ -34,30 +34,32 @@ const UsersCatalog = () => {
   };
 
   if (!user || !user.catalog || user.catalog.length === 0) {
-    return <div>No catalog items.</div>;
+    return <div className="text-center p-8">No catalog items.</div>;
   }
 
   return (
-    <div className="p-4 space-y-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-      <h2 className="text-2xl font-bold">My Catalog</h2>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen text-black dark:text-white p-4 sm:p-6 md:p-8">
+      <h1 className="text-4xl font-bold mb-8 text-blue-500 dark:text-blue-300">My Catalog</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {user.catalog.map((item: CatalogItem) => (
-          <div key={item._id} onClick={() => openItemView(item)} className="p-4 space-y-2 bg-gray-200 rounded-lg shadow-md cursor-pointer dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">
-            <h4 className="text-lg font-bold">{item.title}</h4>
-            {item.mediaType === 'image' && <Image src={item.mediaUrl} alt={item.title} width={400} height={300} className="w-full rounded-md" />}
-            {item.mediaType === 'video' && <video src={item.mediaUrl} controls className="w-full rounded-md" />}
-            <p>{item.description}</p>
+          <div key={item._id} onClick={() => openItemView(item)} className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-blue-500/20 transition-shadow duration-300 flex flex-col cursor-pointer">
+            <div className="p-6">
+              <h4 className="text-lg font-bold text-blue-500 dark:text-blue-300">{item.title}</h4>
+              {item.mediaType === 'image' && <Image src={item.mediaUrl} alt={item.title} width={400} height={300} className="w-full rounded-md mt-4" />}
+              {item.mediaType === 'video' && <video src={item.mediaUrl} controls className="w-full rounded-md mt-4" />}
+              <p className="text-gray-600 dark:text-slate-400 mt-2">{item.description}</p>
+            </div>
           </div>
         ))}
       </div>
 
       {selectedItem && (
-        <div className="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-80" onClick={closeItemView}>
-          <div className="p-8 m-4 space-y-4 overflow-auto bg-white rounded-lg shadow-md max-w-3xl max-h-3/4 dark:bg-gray-800">
-            <h2 className="text-3xl font-bold">{selectedItem.title}</h2>
-            {selectedItem.mediaType === 'image' && <Image src={selectedItem.mediaUrl} alt={selectedItem.title} width={400} height={300} className="w-full rounded-md" />}
+        <div className="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-80 z-50" onClick={closeItemView}>
+          <div className="p-8 m-4 space-y-4 overflow-auto bg-white dark:bg-slate-800 rounded-lg shadow-md max-w-3xl max-h-3/4 text-black dark:text-white">
+            <h2 className="text-3xl font-bold text-blue-500 dark:text-blue-300">{selectedItem.title}</h2>
+            {selectedItem.mediaType === 'image' && <Image src={selectedItem.mediaUrl} alt={selectedItem.title} width={800} height={600} className="w-full rounded-md" />}
             {selectedItem.mediaType === 'video' && <video src={selectedItem.mediaUrl} controls className="w-full rounded-md" />}
-            <p>{selectedItem.description}</p>
+            <p className="text-gray-600 dark:text-slate-400">{selectedItem.description}</p>
           </div>
         </div>
       )}

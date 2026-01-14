@@ -2,15 +2,28 @@
 import React, { createContext, useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { AuthContext } from './AuthContext';
+import axios from 'axios';
 
 interface Message {
-  sender: string;
+  type?: 'text' | 'image' | 'audio' | 'energy';
+  sender: {
+    _id: string;
+    username: string;
+    profilePicture?: string;
+  } | null;
   text: string;
-  timestamp: string; // Assuming timestamp is a string, could be Date
+  timestamp: string;
+  energyData?: {
+    sender: { username: string };
+    recipient: { username: string };
+    amount: number;
+  };
 }
 
 interface User {
+    _id: string;
   username: string;
+  profilePicture?: string;
   rooms?: string[]; // Assuming rooms is an optional array of strings
   // Add other user properties if they are used in this component
 }
@@ -18,6 +31,7 @@ interface User {
 interface UserInRoom {
   _id: string;
   username: string;
+  profilePicture?: string;
 }
 
 interface Room {
@@ -25,6 +39,7 @@ interface Room {
   name: string;
   description?: string;
   isPrivate: boolean;
+  isOneToOne: boolean;
   tags: string[];
   users: UserInRoom[];
   admins: UserInRoom[];
@@ -36,9 +51,10 @@ interface AuthContextType {
 }
 
 interface SocialContextType {
-  room: string;
-  setRoom: (room: string | null) => void;
-  rooms: string[];
+  socket: Socket | null;
+  room: Room | null;
+  setRoom: (room: Room | null) => void;
+  rooms: Room[];
   message: string;
   setMessage: (message: string) => void;
   chat: Message[];
@@ -59,27 +75,48 @@ let socket: Socket;
 
 const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
   const { token, user } = useContext(AuthContext) as AuthContextType;
-  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
-  const [newlyCreatedRooms, setNewlyCreatedRooms] = useState<string[]>([]);
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [fetchedRooms, setFetchedRooms] = useState<Room[]>([]);
+  const [newlyCreatedRooms, setNewlyCreatedRooms] = useState<Room[]>([]);
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      if (token) {
+        try {
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/rooms`, {
+            headers: {
+              'x-auth-token': token,
+            },
+          });
+          setFetchedRooms(response.data);
+        } catch (error) {
+          console.error('Error fetching rooms:', error);
+        }
+      }
+    };
+    fetchRooms();
+  }, [token]);
 
   const rooms = useMemo(() => {
-    const userRooms = user?.rooms || [];
-    const allRooms = new Set([...userRooms, ...newlyCreatedRooms]);
-    return Array.from(allRooms);
-  }, [user, newlyCreatedRooms]);
+    const allRooms = [...fetchedRooms, ...newlyCreatedRooms];
+    const uniqueRooms = allRooms.filter((room, index, self) =>
+      index === self.findIndex((r) => r._id === room._id)
+    );
+    return uniqueRooms;
+  }, [fetchedRooms, newlyCreatedRooms]);
 
   const room = useMemo(() => {
-    if (selectedRoom && rooms.includes(selectedRoom)) {
+    if (selectedRoom && rooms.find(r => r._id === selectedRoom._id)) {
       return selectedRoom;
     }
     if (rooms.length > 0) {
       return rooms[0];
     }
-    return 'General';
+    return null;
   }, [selectedRoom, rooms]);
 
   useEffect(() => {
-    if (room !== selectedRoom) {
+    if (room && room !== selectedRoom) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedRoom(room);
     }
@@ -90,7 +127,7 @@ const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
   const [showCreateRoom, setShowCreateRoom] = useState<boolean>(false);
 
   useEffect(() => {
-    if (token) {
+    if (token && room) {
       socket = io({
         auth: {
           token,
@@ -99,7 +136,7 @@ const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
 
       socket.on('connect', () => {
         console.log('connected');
-        socket.emit('join_room', room);
+        socket.emit('join_room', room.name);
       });
 
       socket.on('load_history', (history: Message[]) => {
@@ -110,8 +147,19 @@ const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
         setChat((prevChat) => [...prevChat, data]);
       });
 
+      socket.on('receive_energy_message', (data) => {
+        const energyMessage: Message = {
+            type: 'energy',
+            sender: null,
+            text: '',
+            timestamp: data.timestamp,
+            energyData: data,
+        };
+        setChat((prevChat) => [...prevChat, energyMessage]);
+      });
+
       socket.on('new_room', (newRoom: Room) => {
-        setNewlyCreatedRooms((prevRooms) => [...prevRooms, newRoom.name]);
+        setNewlyCreatedRooms((prevRooms) => [...prevRooms, newRoom]);
       });
 
       return () => {
@@ -126,9 +174,9 @@ const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
 
   const sendMessage = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    if (message !== '') {
+    if (message !== '' && room) {
       const messageData = {
-        room,
+        room: room.name,
         text: message,
       };
       socket.emit('send_message', messageData);
@@ -137,14 +185,15 @@ const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
   }, [message, room]);
 
   const handleRoomCreated = useCallback((newRoom: Room) => {
-    setNewlyCreatedRooms((prevRooms) => [...prevRooms, newRoom.name]);
-    setSelectedRoom(newRoom.name);
+    setFetchedRooms((prevRooms) => [...prevRooms, newRoom]);
+    setNewlyCreatedRooms((prevRooms) => [...prevRooms, newRoom]);
+    setSelectedRoom(newRoom);
     setShowCreateRoom(false);
   }, []);
 
   const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !room) return;
 
     const formData = new FormData();
     formData.append('file', file);
@@ -160,7 +209,7 @@ const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
       const data = await response.json();
       
       const messageData = {
-        room,
+        room: room.name,
         text: data.url,
       };
       socket.emit('send_message', messageData);
@@ -172,6 +221,7 @@ const SocialProvider: React.FC<SocialProviderProps> = ({ children }) => {
 
   return (
     <SocialContext.Provider value={{
+      socket,
       room,
       setRoom: setSelectedRoom,
       rooms,

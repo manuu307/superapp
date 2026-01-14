@@ -38,6 +38,10 @@ const RoomSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  isOneToOne: {
+    type: Boolean,
+    default: false
+  },
   tags: [{
     type: String,
     trim: true,

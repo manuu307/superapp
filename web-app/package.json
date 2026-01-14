@@ -17,6 +17,7 @@
     "autoprefixer": "^10.4.22",
     "axios": "^1.13.2",
     "daisyui": "^4.12.24",
+    "howler": "^2.2.4",
     "livekit-client": "^2.16.1",
     "lucide-react": "^0.562.0",
     "next": "16.0.7",
@@ -28,6 +29,7 @@
     "tailwindcss": "^3.4.18"
   },
   "devDependencies": {
+    "@types/howler": "^2.2.12",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -24,6 +24,10 @@ const roomRoutes = require('./routes/rooms');
 app.use('/api/v1/rooms', roomRoutes);
 const fileRoutes = require('./routes/files');
 app.use('/api/v1/files', fileRoutes);
+const meRoutes = require('./routes/me');
+app.use('/api/v1/me', meRoutes);
+const universeRoutes = require('./routes/universe');
+app.use('/api/v1/universe', universeRoutes);
 const businessRoutes = require('./routes/business');
 app.use('/api/v1/business', businessRoutes);
 const productRoutes = require('./routes/products');
@@ -40,6 +44,9 @@ app.use('/api/v1/economy', economyRoutes);
 const circlesRoutes = require('./routes/circles');
 app.use('/api/v1/circles', circlesRoutes);
 
+const musicRoutes = require('./routes/music');
+app.use('/api/v1/music', musicRoutes);
+
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./api-documentation.yaml');
@@ -49,7 +56,7 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // --- Database Schema ---
 const MessageSchema = new mongoose.Schema({
   room: String,
-  sender: String,
+  sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   text: String,
   timestamp: { type: Date, default: Date.now }
 });
@@ -136,7 +143,10 @@ async function startServer() {
         }
     
         // Load last 50 messages from DB for history retrieval
-        const history = await Message.find({ room }).sort({ timestamp: 1 }).limit(50);
+        const history = await Message.find({ room })
+            .sort({ timestamp: 1 })
+            .limit(50)
+            .populate('sender', ['_id', 'username', 'profilePicture']);
         // Send history back to the specific client
         socket.emit('load_history', history); 
       } catch (e) {
@@ -152,13 +162,15 @@ async function startServer() {
           return; // Or handle error
         }
         // 1. Structure and Save to MongoDB
-        const newMessage = new Message({
+        let newMessage = new Message({
           room: data.room,
-          sender: user.username, // Use authenticated user's email
+          sender: user._id, // Use authenticated user's ID
           text: data.text
         });
         // Mongoose automatically adds _id and timestamp
         await newMessage.save();
+
+        newMessage = await newMessage.populate('sender', ['_id', 'username', 'profilePicture']);
     
         // 2. Broadcast to room across all instances (via Redis)
         // io.to(data.room) targets everyone in the room, including the sender
@@ -166,6 +178,25 @@ async function startServer() {
       } catch (e) {
         console.error('Error sending message', e);
       }
+    });
+
+    socket.on('send_energy_message', async (data) => {
+        try {
+            const sender = await User.findById(socket.user.id).select('username');
+            const recipient = await User.findById(data.recipientId).select('username');
+            if (!sender || !recipient) {
+                return; // Or handle error
+            }
+            const energyMessage = {
+                sender,
+                recipient,
+                amount: data.amount,
+                timestamp: new Date(),
+            };
+            io.to(data.room).emit('receive_energy_message', energyMessage);
+        } catch (e) {
+            console.error('Error sending energy message', e);
+        }
     });
 
     socket.on('disconnect', () => {
