@@ -13,18 +13,7 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// GET user by ID
-router.get('/:id', async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id).select('-password');
-        if (!user) {
-            return res.status(404).json({ msg: 'User not found' });
-        }
-        res.json(user);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
+
 
 
 // Update user profile
@@ -69,6 +58,21 @@ router.get('/search', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+const EnergyFlow = require('../models/EnergyFlow');
+
+// GET energy flow history for the user
+router.get('/energy-flow', auth, async (req, res) => {
+  console.log(req.user)
+    try {
+        const history = await EnergyFlow.find({ user: req.user.id }).sort({ createdAt: -1 });
+        res.json(history);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 
 // Add a contact
 router.post('/contacts/add/:userId', auth, async (req, res) => {
@@ -198,17 +202,17 @@ router.delete('/catalog/:itemId', auth, async (req, res) => {
   }
 });
 
-const EnergyFlow = require('../models/EnergyFlow');
-
-// GET energy flow history for the user
-router.get('/energy-flow', auth, async (req, res) => {
-  try {
-    const history = await EnergyFlow.find({ user: req.user.id }).sort({ createdAt: -1 });
-    res.json(history);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
+// GET user by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('-password');
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
 
 module.exports = router;
